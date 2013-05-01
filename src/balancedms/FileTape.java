@@ -10,10 +10,8 @@ import java.io.IOException;
 public class FileTape implements Tape {
 
 	private File file;
-	private int buffersize = 1024;
 	private boolean isWritable = true;
 	private boolean isEoF;
-	private final int zahlengroesse = 4;
 
 	FileTape(String filename) {
 		filename = "./Files/" + filename;
@@ -23,12 +21,12 @@ public class FileTape implements Tape {
 
 	@Override
 	public int[] readSequence(int len) throws IOException {
-		byte[] input = new byte[zahlengroesse];
+		byte[] input = new byte[Constants.SCHLUESSELGROESSE];
 		int[] seq	= new int[len];
 		FileInputStream fis = new FileInputStream(file);
 		BufferedInputStream bis = new BufferedInputStream(fis);
 		for (int i = 0; i<len; i++){
-			if (bis.read(input, 0, zahlengroesse)!=-1){
+			if (bis.read(input, 0, Constants.SCHLUESSELGROESSE)!=-1){
 				int ret = 0;
 				for(byte b: input){
 					ret = ((ret<<8)&0xffffff00);
@@ -37,6 +35,7 @@ public class FileTape implements Tape {
 				seq[i] = ret;
 				} else {
 					//ToDo Auf verbleibende Bytes pruefen und ggf. Rueckgabearraylaenge anpassen. o.ae.
+					bis.close();
 					fis.close();
 					isEoF = true;
 					int[] temp = new int[i];
@@ -46,6 +45,7 @@ public class FileTape implements Tape {
 				}
 		}
 		fis.close();
+		bis.close();
 		return seq;
 	}
 
@@ -54,7 +54,7 @@ public class FileTape implements Tape {
 		if (isWritable) {
 			FileOutputStream fos = new FileOutputStream(file);
 			BufferedOutputStream bos = new BufferedOutputStream(fos);
-			byte[] temp = new byte[zahlengroesse];
+			byte[] temp = new byte[Constants.SCHLUESSELGROESSE];
 			for (int i : seq) {
 				temp = convertIntToByteArray(i);
 				bos.write(temp);
