@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import static balancedms.Constants.*;
 
 public class FileTape implements Tape {
 
@@ -21,12 +22,12 @@ public class FileTape implements Tape {
 
 	@Override
 	public int[] readSequence(int len) throws IOException {
-		byte[] input = new byte[Constants.SCHLUESSELGROESSE];
+		byte[] input = new byte[SCHLUESSELGROESSE];
 		int[] seq	= new int[len];
 		FileInputStream fis = new FileInputStream(file);
 		BufferedInputStream bis = new BufferedInputStream(fis);
 		for (int i = 0; i<len; i++){
-			if (bis.read(input, 0, Constants.SCHLUESSELGROESSE)!=-1){
+			if (bis.read(input, 0, SCHLUESSELGROESSE)!=-1){
 				int ret = 0;
 				for(byte b: input){
 					ret = ((ret<<8)&0xffffff00);
@@ -54,7 +55,7 @@ public class FileTape implements Tape {
 		if (isWritable) {
 			FileOutputStream fos = new FileOutputStream(file);
 			BufferedOutputStream bos = new BufferedOutputStream(fos);
-			byte[] temp = new byte[Constants.SCHLUESSELGROESSE];
+			byte[] temp = new byte[SCHLUESSELGROESSE];
 			for (int i : seq) {
 				temp = convertIntToByteArray(i);
 				bos.write(temp);
