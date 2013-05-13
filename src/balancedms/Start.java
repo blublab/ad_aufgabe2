@@ -30,15 +30,21 @@ public class Start {
 //		FolgenErzeuger.ausgabe(tape1);
 		
 		Tape tape1 = new FileTape("tape1.dat");
-		tape1.writeSequence(new int[]{10,13,503,1000});
+//		tape1.writeSequence(new int[]{10,13,503,1000});
+		FolgenErzeuger.erzeuge(tape1, FOLGENLAENGE/2);
 		
 		Tape tape2 = new FileTape("tape2.dat");
-		tape2.writeSequence(new int[]{9,14,303,1023});
+//		tape2.writeSequence(new int[]{2,23,700,900});		
+		FolgenErzeuger.erzeuge(tape2, FOLGENLAENGE/2);
+
 		
 		Tape tape3 = new FileTape("tape3.dat");
+		Tape tape4 = new FileTape("tape4.dat");
+
+		
 
 		Merger<Tape> m = new Merger<Tape>();
-		m.mergeRuns(2, tape1, tape2, tape3);
+		m.mergeTapes(2, tape1, tape2, tape3, tape4);
 		
 
 		FolgenErzeuger.ausgabe(tape3);

@@ -7,8 +7,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Scanner;
+
 import static balancedms.Constants.*;
 
 /** Repraesentation eines Tapes in Form einer Datei
@@ -46,25 +49,29 @@ public class FileTape implements Tape {
 
 	@Override
 	public int[] readSequence(int len) throws IOException {
+		if(bis.available() <= len){
+			isEoF = true;
+			len = bis.available();
+		}
 		byte[] input = new byte[SCHLUESSELGROESSE];
 		int[] seq	= new int[len];
 		//FileInputStream fis = new FileInputStream(file);
 		//BufferedInputStream bis = new BufferedInputStream(fis);
 		for (int i = 0; i<len; i++){
-			if (bis.read(input, 0, SCHLUESSELGROESSE)!=-1){
+			if (bis.read(input, 0, SCHLUESSELGROESSE) != -1){
 				int ret = 0;
 				for(byte b: input){
 					ret = ((ret<<8)&0xffffff00);
 					ret = ret | (b&0x000000ff);
 				}
 				seq[i] = ret;
-				} else {
-					//ToDo Auf verbleibende Bytes pruefen und ggf. Rueckgabearraylaenge anpassen. o.ae.
-					isEoF = true;
-					int[] temp = new int[i];
-					int[] temp2 = new int[1];
-					temp2 = seq;
-					return temp2;
+			} else {
+				//ToDo Auf verbleibende Bytes pruefen und ggf. Rueckgabearraylaenge anpassen. o.ae.
+				isEoF = true;
+				int[] temp = new int[i];
+				int[] temp2 = new int[1];
+				temp2 = seq;
+				return temp2;
 				}
 		}
 		return seq;
@@ -117,6 +124,7 @@ public class FileTape implements Tape {
 	}
 	
 	public void reset() throws IOException{
+		isEoF = false;
 		bos.close();
 		fos.close();
 		FileWriter fwTemp = new FileWriter(file);
