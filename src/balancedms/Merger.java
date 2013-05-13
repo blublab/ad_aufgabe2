@@ -9,6 +9,8 @@ public class Merger<T> {
 	private Tape tape4 			= null;
 	private Tape[] targets 	= {null,null};
 	private Tape[] sources	= {null,null};
+	int runLength			= 0;
+	boolean flipped			= true;
 	
 	/**
 	 * Reads elements of Type T from sources (alternating with runLength), merge-sorts them into 
@@ -27,8 +29,9 @@ public class Merger<T> {
 		tape2		= source2;
 		tape3		= target1;
 		tape4		= target2;
-		sources = new Tape[]{source1, source2};
-		targets	= new Tape[]{target1, target2};
+		sources 	= new Tape[]{source1, source2};
+		targets		= new Tape[]{target1, target2};
+		this.runLength	= runLength;
 		
 		while (runLength <= Constants.FOLGENLAENGE) {
 			while(!(sources[0].isEoF() && sources[1].isEoF())){
@@ -42,87 +45,45 @@ public class Merger<T> {
 	}
 	
 	/* privat -> public */
-	public void mergeRuns(int runLength, Tape source1, Tape source2, Tape target) throws IOException{
-		int i = 0;
-		int src1Ind = 0;
-		int src2Ind = 0;
-		int writeBufInd = 0;
-		int[] writeBuf = new int[Constants.TAPE_BUFFER*2];
-		while(i < runLength){
-			int[] src1Buf = source1.readSequence(Constants.TAPE_BUFFER);
-			int[] src2Buf = source2.readSequence(Constants.TAPE_BUFFER);
-			while(!(source1.isEoF()) && (!(source2.isEoF()))){
-				if(src1Buf[src1Ind] < src2Buf[src2Ind]){
+	public void mergeRuns(int runLength, Tape source1, Tape source2, Tape target) throws IOException {
+		while(flipped){
+			flipped = false;
+			while (!(iterator1.isEOF && iterator2.isEOF){
+				//iteratoren erneuern
+				while (!(iterator1.isEOR || iterator2.isEOR)){
 					
-					if(writeBufInd >= Constants.TAPE_BUFFER*2){
-						target.writeSequence(writeBuf);
-						writeBuf = new int[Constants.TAPE_BUFFER*2];
-						writeBufInd = 0;
-						writeBuf[writeBufInd] = src1Buf[src1Ind];
-					} 
-					writeBuf[writeBufInd] = src1Buf[src1Ind];
-					writeBufInd++;
-					src1Ind += 1;
-					if(src1Ind == Constants.TAPE_BUFFER){
-						src1Buf = source1.readSequence(Constants.TAPE_BUFFER); 
-						src1Ind = 0;
-					} 
-					
-
-				} else {
-					
-					if(writeBufInd >= Constants.TAPE_BUFFER*2){
-						target.writeSequence(writeBuf);
-						writeBuf = new int[Constants.TAPE_BUFFER*2];
-						writeBufInd = 0;
-						writeBuf[writeBufInd] = src2Buf[src2Ind];
-					} 
-					writeBuf[writeBufInd] = src2Buf[src2Ind];
-					writeBufInd++;
-					src2Ind += 1;
-					if(src2Ind == Constants.TAPE_BUFFER){
-						src2Buf = source2.readSequence(Constants.TAPE_BUFFER); 
-						src2Ind = 0;
-					} 
+					BufferedWriter = (iterator1.curr <= iterator2.curr) iterator1.curr : iterator2.curr;
+					if (iterator1.isEOR){
+						while(!iterator2.EOR) {BufferedWriter = iterator2.next());
+					} else {
+						while(!iterator1.EOR) {BufferedWriter = iterator1.next());
+					}
+							
 				}
 			}
-			if (source1.isEoF()) {
-				while (!(source2.isEoF())) {
-					
-					if(writeBufInd >= Constants.TAPE_BUFFER*2){
-						target.writeSequence(writeBuf);
-						writeBuf = new int[Constants.TAPE_BUFFER*2];
-						writeBufInd = 0;
-						writeBuf[writeBufInd] = src1Buf[src1Ind];
-					} 
-					writeBuf[writeBufInd] = src1Buf[src1Ind];
-					writeBufInd++;
-					src2Ind += 1;
-					if(src2Ind == Constants.TAPE_BUFFER){
-						src2Buf = source2.readSequence(Constants.TAPE_BUFFER); 
-						src2Ind = 0;
-					} 
-				}
-			} else {
-				while (!(source1.isEoF())) {
-					
-					if(writeBufInd >= Constants.TAPE_BUFFER*2){
-						target.writeSequence(writeBuf);
-						writeBuf = new int[Constants.TAPE_BUFFER*2];
-						writeBufInd = 0;
-						writeBuf[writeBufInd] = src1Buf[src1Ind];
-					} 
-					writeBuf[writeBufInd] = src1Buf[src1Ind];
-					writeBufInd++;
-					src1Ind += 1;
-					if(src1Ind == Constants.TAPE_BUFFER){
-						src1Buf = source1.readSequence(Constants.TAPE_BUFFER); 
-						src1Ind = 0;
-					} 
-				}
-			}
-			i++;
+				
 		}
+			
+		}
+		
+		// -> Fertig, Rueckgabe
+		
+	//while(flipped)
+	//flipped->false
+	  //while (!(iterator1.EOF && iterator2.EOF))
+		//Iteratoren erneuern
+		//while !(iterator1.ENDRUN || iterator2.ENDRUN)
+			//    BufferedWriter = (iterator1 <= iterator2) iterator1 : iterator2
+			//if iterator1.ENDE
+			//	while(!iterator1.ENDE) {BufferedWriter = iterator1)
+			//else
+			//  while(!iterator2.ENDE) {BufferedWriter = iterator2)
+			//
+			//BufferedWriter.flush()
+		//if iteratoren nicht EOF -> flipped = true
+		//	flipTargets und iteratoren -> !ENDRUN
+	  //flipSourcesTargets()
+		
 	}
 	
 	private void flipTargets(){
