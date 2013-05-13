@@ -1,5 +1,5 @@
 package balancedms;
 
-public class MemSort<T> {
-
+public interface MemSort<T> {
+	public T[] sortSequence(T[] sequence, int length);
 }

@@ -2,30 +2,54 @@ package balancedms;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import static balancedms.Constants.*;
 
+/** Repraesentation eines Tapes in Form einer Datei
+ * 
+ * @author m215025
+ *
+ */
 public class FileTape implements Tape {
 
 	private File file;
 	private boolean isWritable = true;
 	private boolean isEoF;
-
-	FileTape(String filename) {
+	private FileInputStream fis = null;
+	private BufferedInputStream bis = null;
+	private FileOutputStream fos = null;
+	private BufferedOutputStream bos = null;
+	//FileWriter fw = null;
+	//BufferedWriter bw = null;
+	
+	FileTape(String filename) throws IOException {
 		filename = "./Files/" + filename;
 		File f = new File(filename);
 		this.file = f;
+		//fw = new FileWriter(file, true);
+		//bw = new BufferedWriter(fw);
+		this.fos = new FileOutputStream(file, true);
+		this.bos = new BufferedOutputStream(fos);
+		this.fis = new FileInputStream(file);
+		this.bis = new BufferedInputStream(fis);
+
+
+
+
 	}
 
 	@Override
 	public int[] readSequence(int len) throws IOException {
 		byte[] input = new byte[SCHLUESSELGROESSE];
 		int[] seq	= new int[len];
-		FileInputStream fis = new FileInputStream(file);
-		BufferedInputStream bis = new BufferedInputStream(fis);
+		//FileInputStream fis = new FileInputStream(file);
+		//BufferedInputStream bis = new BufferedInputStream(fis);
 		for (int i = 0; i<len; i++){
 			if (bis.read(input, 0, SCHLUESSELGROESSE)!=-1){
 				int ret = 0;
@@ -36,8 +60,6 @@ public class FileTape implements Tape {
 				seq[i] = ret;
 				} else {
 					//ToDo Auf verbleibende Bytes pruefen und ggf. Rueckgabearraylaenge anpassen. o.ae.
-					bis.close();
-					fis.close();
 					isEoF = true;
 					int[] temp = new int[i];
 					int[] temp2 = new int[1];
@@ -45,22 +67,23 @@ public class FileTape implements Tape {
 					return temp2;
 				}
 		}
-		fis.close();
-		bis.close();
 		return seq;
 	}
 
 	@Override
 	public void writeSequence(int[] seq) throws IOException {
 		if (isWritable) {
-			FileOutputStream fos = new FileOutputStream(file);
-			BufferedOutputStream bos = new BufferedOutputStream(fos);
+			//FileOutputStream fos = new FileOutputStream(file);
+			//BufferedOutputStream bos = new BufferedOutputStream(fos);
 			byte[] temp = new byte[SCHLUESSELGROESSE];
 			for (int i : seq) {
 				temp = convertIntToByteArray(i);
 				bos.write(temp);
+				//FileWriter fw = new FileWriter(file, true);
+				//BufferedWriter bw = new BufferedWriter(fw);
+				//bos.write
 			}
-			bos.close();
+			bos.flush();
 		}
 	}
 
@@ -91,5 +114,15 @@ public class FileTape implements Tape {
         buffer[3] = (byte) val;
         
         return buffer;
+	}
+	
+	public void reset() throws IOException{
+		bos.close();
+		fos.close();
+		FileWriter fwTemp = new FileWriter(file);
+		fwTemp.write("");
+		fwTemp.close();
+		fos = new FileOutputStream(file, true);
+		bos = new BufferedOutputStream(fos);
 	}
 }

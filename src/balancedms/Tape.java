@@ -7,4 +7,5 @@ public interface Tape {
 	void writeSequence(int[] seq) throws IOException;
 	boolean isWritable();
 	boolean isEoF();
+	void reset() throws IOException;
 }
