@@ -1,9 +1,6 @@
 package balancedms;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Random;
 
@@ -28,9 +25,7 @@ public class FolgenErzeuger {
 
 	public static void erzeuge(Tape tape, int anzahl) throws FileNotFoundException, IOException{
 		Random randomizer = new Random();
-//		File datei = new File("./Files/" + tape);
-//		FileOutputStream fos = new FileOutputStream(datei);
-//		BufferedOutputStream bos = new BufferedOutputStream(fos);
+		tape.resetForWrite();
 
 		int[] temp = new int[anzahl];
 		for (int i=0;i<anzahl;i++) {
@@ -39,11 +34,15 @@ public class FolgenErzeuger {
 		}
 		tape.writeSequence(temp);
 	 }
-	
-	public static void ausgabe(Tape tape) throws IOException{
-		int[] zahlen = tape.readSequence(8);
-		for(int n: zahlen){
-			System.out.println(n);
+
+	public static void ausgabe(Tape tape) throws IOException {
+		tape.resetForRead();
+		int[] zahlen = tape.readSequence(1);
+		while (zahlen.length != 0) {
+			for (int n : zahlen) {
+				System.out.println(n + "\t" + zahlen.length);
+			}
+			zahlen = tape.readSequence(1);
 		}
 	}
 	

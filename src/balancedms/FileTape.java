@@ -2,16 +2,11 @@ package balancedms;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Scanner;
-
 import static balancedms.Constants.*;
 
 /** Repraesentation eines Tapes in Form einer Datei
@@ -58,21 +53,13 @@ public class FileTape implements Tape {
 		//FileInputStream fis = new FileInputStream(file);
 		//BufferedInputStream bis = new BufferedInputStream(fis);
 		for (int i = 0; i<len; i++){
-			if (bis.read(input, 0, SCHLUESSELGROESSE) != -1){
-				int ret = 0;
-				for(byte b: input){
-					ret = ((ret<<8)&0xffffff00);
-					ret = ret | (b&0x000000ff);
-				}
-				seq[i] = ret;
-			} else {
-				//ToDo Auf verbleibende Bytes pruefen und ggf. Rueckgabearraylaenge anpassen. o.ae.
-				isEoF = true;
-				int[] temp = new int[i];
-				int[] temp2 = new int[1];
-				temp2 = seq;
-				return temp2;
-				}
+			bis.read(input, 0, SCHLUESSELGROESSE);
+			int ret = 0;
+			for(byte b: input){
+				ret = ((ret<<8)&0xffffff00);
+				ret = ret | (b&0x000000ff);
+			}
+			seq[i] = ret;
 		}
 		return seq;
 	}
@@ -80,15 +67,10 @@ public class FileTape implements Tape {
 	@Override
 	public void writeSequence(int[] seq) throws IOException {
 		if (isWritable) {
-			//FileOutputStream fos = new FileOutputStream(file);
-			//BufferedOutputStream bos = new BufferedOutputStream(fos);
 			byte[] temp = new byte[SCHLUESSELGROESSE];
 			for (int i : seq) {
 				temp = convertIntToByteArray(i);
 				bos.write(temp);
-				//FileWriter fw = new FileWriter(file, true);
-				//BufferedWriter bw = new BufferedWriter(fw);
-				//bos.write
 			}
 			bos.flush();
 		}
@@ -132,5 +114,22 @@ public class FileTape implements Tape {
 		fwTemp.close();
 		fos = new FileOutputStream(file, true);
 		bos = new BufferedOutputStream(fos);
+	}
+	
+	public void resetForWrite() throws IOException {
+		bos.close();
+		fos.close();
+		FileWriter fwTemp = new FileWriter(file);
+		fwTemp.write("");
+		fwTemp.close();
+		fos = new FileOutputStream(file, true);
+		bos = new BufferedOutputStream(fos);
+	}
+	
+	public void resetForRead() throws IOException {
+		bis.close();
+		fis.close();
+		fis = new FileInputStream(file);
+		bis = new BufferedInputStream(fis);
 	}
 }

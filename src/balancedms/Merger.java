@@ -49,26 +49,26 @@ public class Merger<T> {
 		int src1Ind = 0;
 		int src2Ind = 0;
 		int writeBufInd = 0;
-		int[] writeBuf = new int[Constants.TAPE_BUFFER * 2];
-		int[] src1Buf = source1.readSequence(Constants.TAPE_BUFFER);
-		int[] src2Buf = source2.readSequence(Constants.TAPE_BUFFER);
+		int[] writeBuf = new int[Constants.WRITE_BUFFER];
+		int[] src1Buf = source1.readSequence(Constants.READ_BUFFER);
+		int[] src2Buf = source2.readSequence(Constants.READ_BUFFER);
 		while ((i < runLength * 2)
 				&& (!(source1.isEoF()) && (!(source2.isEoF())))) {
 			i++;
 
 			if (src1Buf[src1Ind] < src2Buf[src2Ind]) {
 
-				if (writeBufInd >= Constants.TAPE_BUFFER * 2) {
+				if (writeBufInd >=Constants.WRITE_BUFFER) {
 					target.writeSequence(writeBuf);
-					writeBuf = new int[Constants.TAPE_BUFFER * 2];
+					writeBuf = new int[Constants.READ_BUFFER];
 					writeBufInd = 0;
 					writeBuf[writeBufInd] = src1Buf[src1Ind];
 				}
 				writeBuf[writeBufInd] = src1Buf[src1Ind];
 				writeBufInd++;
 				src1Ind += 1;
-				if (src1Ind == Constants.TAPE_BUFFER) {
-					src1Buf = source1.readSequence(Constants.TAPE_BUFFER);
+				if (src1Ind == Constants.READ_BUFFER) {
+					src1Buf = source1.readSequence(Constants.READ_BUFFER);
 					src1Ind = 0;
 				}
 
