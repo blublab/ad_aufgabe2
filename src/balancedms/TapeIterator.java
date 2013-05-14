@@ -18,6 +18,7 @@ public class TapeIterator {
 		this.tape.resetForRead();
 		this.runLength = runLength;
 		buffer = new int[Constants.READ_BUFFER];
+		fillBuffer();
 	}
 	
 	public int next() throws IOException{
