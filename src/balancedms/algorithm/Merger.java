@@ -1,12 +1,17 @@
-package balancedms;
+package balancedms.algorithm;
 
 import java.io.IOException;
 
-public class Merger<T> {
-	private Tape tape1 			= null;
-	private Tape tape2 			= null; 
-	private Tape tape3 			= null;
-	private Tape tape4 			= null;
+import balancedms.controls.Constants;
+import balancedms.helper.BufferedWriter;
+import balancedms.helper.TapeIterator;
+import balancedms.io.Tape;
+
+public class Merger {
+//	private Tape tape1 			= null;
+//	private Tape tape2 			= null; 
+//	private Tape tape3 			= null;
+//	private Tape tape4 			= null;
 	private Tape[] targets 		= {null,null};
 	private Tape[] sources		= {null,null};
 	private int runLength		= 0;
@@ -45,7 +50,7 @@ public class Merger<T> {
 				iterator1.nextRun();
 				iterator2.nextRun();
 				
-				while (!(iterator1.isEOR || iterator2.isEOR)){
+				while (!(iterator1.isEOR && iterator2.isEOR)){
 					if (iterator1.isEOR)
 						while(!iterator2.isEOR) {bw.add(iterator2.next());}
 					else if (iterator2.isEOR)
@@ -55,17 +60,29 @@ public class Merger<T> {
 						int current2	= iterator2.next();
 						if (current1 <= current2) {
 							bw.add(current1);
+							while (current1 <= current2 && !(iterator1.isEOR)) {
+								current1	= iterator1.next();
+								bw.add(current1);
+							}
 						} else {
-							bw.add(current2);
+							while (current2 < current1 && !(iterator2.isEOR)) {
+								bw.add(current2);
+								current2	= iterator2.next();
+								bw.add(current2);
+							}
 						}
 					}
 				}
+				System.out.println("ende innere schleife");
+				System.out.flush();
 				if (!(iterator1.isEOR && iterator1.isEOF && iterator2.isEOR && iterator2.isEOF)){
 					flipTargets();
 					bw.switchToTape(targets[0]);
 					flipped = true;
 				}
 			}
+			System.out.println("ende mittlere schleife");
+			System.out.flush();
 			flipSourcesTargets();
 			this.runLength *= 2;
 		}

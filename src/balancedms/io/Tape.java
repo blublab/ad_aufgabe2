@@ -1,4 +1,4 @@
-package balancedms;
+package balancedms.io;
 
 import java.io.IOException;
 

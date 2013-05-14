@@ -1,4 +1,4 @@
-package balancedms;
+package balancedms.io;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -9,7 +9,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import static balancedms.Constants.*;
+
+import balancedms.controls.Constants;
+import static balancedms.controls.Constants.*;
 
 /** Repraesentation eines Tapes in Form einer Datei
  * 
@@ -29,7 +31,7 @@ public class FileTape implements Tape {
 	//FileWriter fw = null;
 	//BufferedWriter bw = null;
 	
-	FileTape(String filename) throws IOException {
+	public FileTape(String filename) throws IOException {
 		filename = "./Files/" + filename;
 		File f = new File(filename);
 		this.file = f;

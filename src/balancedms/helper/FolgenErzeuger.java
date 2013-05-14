@@ -1,4 +1,4 @@
-package balancedms;
+package balancedms.helper;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -6,6 +6,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Random;
+
+import balancedms.io.Tape;
 
 /**
  * Erzeugt eine Zufallsfolge und schreibt diese in die Datei "z:/folge.dat"

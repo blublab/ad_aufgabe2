@@ -1,4 +1,4 @@
-package balancedms;
+package balancedms.algorithm;
 
 import java.util.Arrays;
 
