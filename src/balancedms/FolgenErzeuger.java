@@ -43,6 +43,7 @@ public class FolgenErzeuger {
 	 }
 	
 	public static void ausgabe(Tape tape) throws IOException{
+		tape.resetForRead();
 		int[] zahlen = tape.readSequence(16);
 		while(zahlen.length != 0){
 			for(int n: zahlen){

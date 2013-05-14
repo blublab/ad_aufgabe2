@@ -75,13 +75,16 @@ public class Merger<T> {
 	
 	public void initialize(Tape source, Tape target1, Tape target2) throws IOException {
 		this.targets	= new Tape[]{target1, target2};
+		this.targets[0].resetForWrite();
+		this.targets[1].resetForWrite();
+		source.resetForRead();
 		MemSort ms 		= new LibrarySort();
 		int[] seq	= source.readSequence(Constants.MEMSORT_BUFFER);
-		while (seq.length == Constants.MEMSORT_BUFFER){
-			seq = source.readSequence(Constants.MEMSORT_BUFFER);
+		while (seq.length != 0){
 			ms.sortSequence(seq, Constants.MEMSORT_BUFFER);
 			targets[0].writeSequence(seq);
 			flipTargets();
+			seq = source.readSequence(Constants.MEMSORT_BUFFER);
 		}
 		
 	}
