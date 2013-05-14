@@ -7,10 +7,10 @@ public class Merger<T> {
 	private Tape tape2 			= null; 
 	private Tape tape3 			= null;
 	private Tape tape4 			= null;
-	private Tape[] targets 	= {null,null};
-	private Tape[] sources	= {null,null};
-	int runLength			= 0;
-	boolean flipped			= true;
+	private Tape[] targets 		= {null,null};
+	private Tape[] sources		= {null,null};
+	private int runLength		= 0;
+	private boolean flipped		= true;
 	
 	/**
 	 * Reads elements of Type T from sources (alternating with runLength), merge-sorts them into 
@@ -25,46 +25,66 @@ public class Merger<T> {
 		assert(target2 != null);
 		assert(runLength > 0);
 		
-		tape1		= source1;
-		tape2		= source2;
-		tape3		= target1;
-		tape4		= target2;
+//		tape1		= source1;
+//		tape2		= source2;
+//		tape3		= target1;
+//		tape4		= target2;
 		sources 	= new Tape[]{source1, source2};
 		targets		= new Tape[]{target1, target2};
-		this.runLength	= runLength;
+		this.runLength	= Constants.MEMSORT_BUFFER;
 		
-		while (runLength <= Constants.FOLGENLAENGE) {
-			while(!(sources[0].isEoF() && sources[1].isEoF())){
-				mergeRuns(runLength, sources[0], sources[1], targets[0]);
-				flipTargets();
+		while(flipped){
+			flipped = false;
+			TapeIterator iterator1 	= new TapeIterator(sources[0], runLength);
+			TapeIterator iterator2 	= new TapeIterator(sources[1], runLength);
+			BufferedWriter bw		= new BufferedWriter(sources[0]);
+			
+			while (!(iterator1.isEOF && iterator2.isEOF)){
+				
+				//iteratoren auf neuen Run Synchronisieren (bei EOF bleibt EOR erhalten)
+				iterator1.nextRun();
+				iterator2.nextRun();
+				
+				while (!(iterator1.isEOR || iterator2.isEOR)){
+					if (iterator1.isEOR)
+						while(!iterator2.isEOR) {bw.add(iterator2.next());}
+					else if (iterator2.isEOR)
+						while(!iterator1.isEOR) {bw.add(iterator1.next());}
+					else {
+						int current1	= iterator1.next();
+						int current2	= iterator2.next();
+						if (current1 <= current2) {
+							bw.add(current1);
+						} else {
+							bw.add(current2);
+						}
+					}
+				}
+				if (!(iterator1.isEOR && iterator1.isEOF && iterator2.isEOR && iterator2.isEOF)){
+					flipTargets();
+					bw.switchToTape(targets[0]);
+					flipped = true;
+				}
 			}
 			flipSourcesTargets();
-			runLength *=2;
+			this.runLength *= 2;
 		}
+		
 		return targets[1];
 	}
 	
-	/* privat -> public */
-	public void mergeRuns(int runLength, Tape source1, Tape source2, Tape target) throws IOException {
-		while(flipped){
-			flipped = false;
-			while (!(iterator1.isEOF && iterator2.isEOF){
-				//iteratoren erneuern
-				while (!(iterator1.isEOR || iterator2.isEOR)){
-					
-					BufferedWriter = (iterator1.curr <= iterator2.curr) iterator1.curr : iterator2.curr;
-					if (iterator1.isEOR){
-						while(!iterator2.EOR) {BufferedWriter = iterator2.next());
-					} else {
-						while(!iterator1.EOR) {BufferedWriter = iterator1.next());
-					}
-							
-				}
-			}
-				
+	public void initialize(Tape source, Tape target1, Tape target2) throws IOException {
+		this.targets	= new Tape[]{target1, target2};
+		MemSort ms 		= new LibrarySort();
+		int[] seq	= source.readSequence(Constants.MEMSORT_BUFFER);
+		while (seq.length == Constants.MEMSORT_BUFFER){
+			seq = source.readSequence(Constants.MEMSORT_BUFFER);
+			ms.sortSequence(seq, Constants.MEMSORT_BUFFER);
+			targets[0].writeSequence(seq);
+			flipTargets();
 		}
-			
-		}
+		
+	}
 		
 		// -> Fertig, Rueckgabe
 		
@@ -84,7 +104,7 @@ public class Merger<T> {
 		//	flipTargets und iteratoren -> !ENDRUN
 	  //flipSourcesTargets()
 		
-	}
+	
 	
 	private void flipTargets(){
 		Tape tmp 	= targets[0];
@@ -93,9 +113,9 @@ public class Merger<T> {
 	}
 	
 	private void flipSourcesTargets() throws IOException{
-		for(Tape t: sources){
-			t.reset();
-		}
+//		for(Tape t: sources){
+//			t.reset();
+//		}
 		Tape[] temp = targets;
 		targets = sources;
 		sources = temp;

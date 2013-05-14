@@ -2,11 +2,10 @@ package balancedms;
 
 import java.util.Arrays;
 
-public class LibrarySort<T> implements MemSort<T>{
+public class LibrarySort implements MemSort{
 
 	@Override
-	public T[] sortSequence(T[] seq, int length) {
+	public void sortSequence(int[] seq, int length) {
 		Arrays.sort(seq);
-		return seq;
 	}
 }

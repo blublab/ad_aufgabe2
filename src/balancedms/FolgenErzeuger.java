@@ -31,20 +31,24 @@ public class FolgenErzeuger {
 //		File datei = new File("./Files/" + tape);
 //		FileOutputStream fos = new FileOutputStream(datei);
 //		BufferedOutputStream bos = new BufferedOutputStream(fos);
+		tape.resetForWrite();
 
 		int[] temp = new int[anzahl];
 		for (int i=0;i<anzahl;i++) {
 			int zufallszahl = (lowerBound + randomizer.nextInt((upperBound) + randomizer.nextInt((upperBound))));
-			System.out.println("X: "+ zufallszahl);
+			//System.out.println("X: "+ zufallszahl);
 			temp[i] = zufallszahl;
 		}
 		tape.writeSequence(temp);
 	 }
 	
 	public static void ausgabe(Tape tape) throws IOException{
-		int[] zahlen = tape.readSequence(7);
-		for(int n: zahlen){
-			System.out.println(n);
+		int[] zahlen = tape.readSequence(16);
+		while(zahlen.length != 0){
+			for(int n: zahlen){
+				System.out.println(n + "\t" + zahlen.length);
+			}
+			zahlen = tape.readSequence(15);
 		}
 	}
 	

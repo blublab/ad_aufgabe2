@@ -1,34 +1,58 @@
 package balancedms;
 
 import java.io.IOException;
-import java.util.Iterator;
 
 public class TapeIterator {
-	Tape t			= null;
+	Tape tape			= null;
 	int[] buffer 	= null;
 	int runLength	= 0;
 	boolean isEOF	= false;
 	boolean isEOR	= false;
-	boolean becomesEOF	= false;
-	boolean becomesEOR	= false;
+	boolean becomesEOF		= false;
+	boolean becomesEOR		= false;
 	int returnedElements	= 0;
-	int currentIndex	= 0;
+	int currentIndex		= 0;
 	
-	TapeIterator(Tape t, int runLength){
-		this.t	= t;
+	TapeIterator(Tape t, int runLength) throws IOException{
+		this.tape	= t;
+		this.tape.resetForRead();
 		this.runLength = runLength;
-		buffer = new int[Constants.TAPE_BUFFER];
+		buffer = new int[Constants.READ_BUFFER];
 	}
 	
-	public int next(){
-		return buffer[currentIndex++];
+	public int next() throws IOException{
+		if (currentIndex < (buffer.length-1)){
+			return buffer[currentIndex++];
+		} else {
+			if (!becomesEOR && !becomesEOF){
+				int temp = buffer[currentIndex];
+				fillBuffer();
+				return temp;
+			} else {
+				if (becomesEOR)
+					isEOR = true;
+				if (becomesEOF)
+					isEOF = true;
+					isEOR = true;
+				return buffer[currentIndex];
+			}
+		}
+	}
+	
+	public void nextRun() throws IOException{
+		if (!isEOF){
+			isEOR 		= false;
+			becomesEOF 	= false;
+			becomesEOR 	= false;
+			fillBuffer();
+		}
 	}
 	
 	private void fillBuffer() throws IOException{
 		
 		/*Falls verbleibende Elemente weniger als Buffersize*/
-		if ((this.runLength - returnedElements) < Constants.TAPE_BUFFER){
-			buffer = t.readSequence(this.runLength - returnedElements);
+		if ((this.runLength - returnedElements) < Constants.READ_BUFFER){
+			buffer = tape.readSequence(this.runLength - returnedElements);
 			becomesEOR = true;
 			if (buffer.length < (this.runLength - returnedElements)){
 				becomesEOF = true;
@@ -37,8 +61,8 @@ public class TapeIterator {
 		
 		/*Sonst fuelle gesamten Buffer*/
 		else {
-			buffer = t.readSequence(Constants.TAPE_BUFFER);
-			if (buffer.length < Constants.TAPE_BUFFER){
+			buffer = tape.readSequence(Constants.READ_BUFFER);
+			if (buffer.length < Constants.READ_BUFFER){
 				becomesEOF = true;
 			}
 		}

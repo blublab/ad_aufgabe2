@@ -25,6 +25,7 @@ public class FileTape implements Tape {
 	private BufferedInputStream bis = null;
 	private FileOutputStream fos = null;
 	private BufferedOutputStream bos = null;
+	private int offset = 0;
 	//FileWriter fw = null;
 	//BufferedWriter bw = null;
 	
@@ -44,14 +45,47 @@ public class FileTape implements Tape {
 
 	}
 
+	
+//	@Override
+//	public int[] readSequence(int len) throws IOException {
+//		byte[] input = new byte[SCHLUESSELGROESSE];
+//		int[] seq	= new int[len];
+//		for (int i = 0; i<len; i++){
+//			if (bis.read(input) != -1){
+//				int ret = 0;
+//				for(byte b: input){
+//					ret = ((ret<<8)&0xffffff00);
+//					ret = ret | (b&0x000000ff);
+//				}
+//				seq[i] = ret;
+//				} else {
+//					//ToDo Auf verbleibende Bytes pruefen und ggf. Rueckgabearraylaenge anpassen. o.ae.
+//					isEoF = true;
+////					int[] temp = new int[i];
+////					int[] temp2 = new int[1];
+////					temp2 = seq;
+//					return new int[0];
+//				}
+//		}
+//		return seq;
+//	}
+	
+	
 	@Override
 	public int[] readSequence(int len) throws IOException {
-		byte[] input = new byte[SCHLUESSELGROESSE];
-		int[] seq	= new int[len];
-		//FileInputStream fis = new FileInputStream(file);
-		//BufferedInputStream bis = new BufferedInputStream(fis);
+		byte[] input = new byte[Constants.SCHLUESSELGROESSE];
+		int[] seq	= null;
+		
+		int avail = 0;
+		
+		avail = bis.available()/4;
+		
+		if (avail < len) len = avail;
+		
+		seq = new int[len];
+		
 		for (int i = 0; i<len; i++){
-			if (bis.read(input, 0, SCHLUESSELGROESSE)!=-1){
+			if (bis.read(input) != -1){
 				int ret = 0;
 				for(byte b: input){
 					ret = ((ret<<8)&0xffffff00);
@@ -59,12 +93,7 @@ public class FileTape implements Tape {
 				}
 				seq[i] = ret;
 				} else {
-					//ToDo Auf verbleibende Bytes pruefen und ggf. Rueckgabearraylaenge anpassen. o.ae.
 					isEoF = true;
-					int[] temp = new int[i];
-					int[] temp2 = new int[1];
-					temp2 = seq;
-					return temp2;
 				}
 		}
 		return seq;
@@ -87,7 +116,6 @@ public class FileTape implements Tape {
 		}
 	}
 
-	@Override
 	public boolean isWritable() {
 		return isWritable;
 	}
@@ -97,8 +125,6 @@ public class FileTape implements Tape {
 	}
 
 
-
-	@Override
 	public boolean isEoF() {
 		file.length();
 		return isEoF;
@@ -116,7 +142,7 @@ public class FileTape implements Tape {
         return buffer;
 	}
 	
-	public void reset() throws IOException{
+	public void resetForWrite() throws IOException{
 		bos.close();
 		fos.close();
 		FileWriter fwTemp = new FileWriter(file);
@@ -124,5 +150,13 @@ public class FileTape implements Tape {
 		fwTemp.close();
 		fos = new FileOutputStream(file, true);
 		bos = new BufferedOutputStream(fos);
+	}
+	
+	public void resetForRead() throws IOException{
+		bis.close();
+		fis.close();
+		offset = 0;
+		fis = new FileInputStream(file);
+		bis = new BufferedInputStream(fis);
 	}
 }
