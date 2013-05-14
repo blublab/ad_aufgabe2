@@ -107,13 +107,7 @@ public class FileTape implements Tape {
 	
 	public void reset() throws IOException{
 		isEoF = false;
-		bos.close();
-		fos.close();
-		FileWriter fwTemp = new FileWriter(file);
-		fwTemp.write("");
-		fwTemp.close();
-		fos = new FileOutputStream(file, true);
-		bos = new BufferedOutputStream(fos);
+		resetForRead();
 	}
 	
 	public void resetForWrite() throws IOException {

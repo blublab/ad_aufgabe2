@@ -32,10 +32,49 @@ public class Start {
 
 		FolgenErzeuger.ausgabe(tape3);
 		
-
+		tape1.reset();
+		tape2.reset();
+		tape3.reset();
+		tape4.reset();
 
 		
-		m.mergen(4, tape2, tape3, tape4, tape1);
+		m.mergen(2, tape2, tape3, tape4, tape1);
+		
+		tape1.reset();
+		tape2.reset();
+		tape3.reset();
+		tape4.reset();
+		System.out.println("====================  ====================");
+		
+		System.out.println("====================  ====================");
+
+		
+		System.out.println("====================  ====================");
+
+		
+		System.out.println("====================  ====================");
+
+		
+		
+		
+		
+		tape1.reset();
+		tape2.reset();
+		tape3.reset();
+		tape4.reset();
+		System.out.println("==================== Tape1 ====================");
+
+		FolgenErzeuger.ausgabe(tape1);
+		System.out.println("==================== Tape2 ====================");
+
+		FolgenErzeuger.ausgabe(tape2);
+		System.out.println("==================== Tape3 ====================");
+
+		FolgenErzeuger.ausgabe(tape3);
+		System.out.println("==================== Tape4 ====================");
+
+		FolgenErzeuger.ausgabe(tape4);
+	
 		
 	}
 
