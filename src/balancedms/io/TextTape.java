@@ -51,13 +51,31 @@ public class TextTape implements Tape{
 		}
 		return tempRet;
 	}
+	
+	@Override
+	public String toString(){
+		return file.toString();
+	}
 
+	@Override
+	public void print() throws IOException{
+		resetForRead();
+		int[] zahlen = readSequence(32);
+		while(zahlen.length != 0){
+			for(int n: zahlen){
+				System.out.println(n + "\t" + zahlen.length);
+			}
+			zahlen = readSequence(32);
+		}
+		resetForRead();
+	}
+	
 	@Override
 	public void writeSequence(int[] seq) throws IOException {
 		for (int i: seq){
 			bw.write(Integer.toString(i));
 			bw.write("\n");
-			bw.flush();
+			bw.flush(); 
 		}
 	}
 

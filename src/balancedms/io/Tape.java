@@ -9,4 +9,5 @@ public interface Tape {
 	//boolean isEoF();
 	void resetForRead() throws IOException;
 	void resetForWrite() throws IOException;
+	void print() throws IOException;
 }

@@ -34,17 +34,12 @@ public class Start {
 		System.out.print("Beginne Folgenerzeugung\t\t");
 		FolgenErzeuger.erzeuge(tape1, Constants.FOLGENLAENGE);
 		System.out.println("abgeschlossen");
-//		FolgenErzeuger.ausgabe(tape1);
 		
 		Merger m = new Merger();
 		
 		System.out.print("Befülle StartTapes (MemSort)\t");
 		m.initialize(tape1, tape3, tape4);
 		System.out.println("abgeschlossen");
-//		System.out.println("\ntape3:");
-//		FolgenErzeuger.ausgabe(tape3);
-//		System.out.println("\ntape4:");
-//		FolgenErzeuger.ausgabe(tape4);
 		
 		System.out.print("Starte Mergen der Tapes\t\t");
 		m.mergeTapes(MEMSORT_BUFFER, tape3, tape4, tape1, tape2);

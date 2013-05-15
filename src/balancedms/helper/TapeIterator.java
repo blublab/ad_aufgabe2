@@ -9,9 +9,9 @@ public class TapeIterator {
 	public boolean isEOF	= false;
 	public boolean isEOR	= false;
 
-	private Tape tape			= null;
-	private int[] buffer 	= null;
-	private int runLength	= 0;
+	private Tape tape				= null;
+	private int[] buffer 			= null;
+	private int runLength			= 0;
 	private boolean becomesEOF		= false;
 	private boolean becomesEOR		= false;
 	private int returnedElements	= 0;
@@ -22,7 +22,7 @@ public class TapeIterator {
 		this.tape.resetForRead();
 		this.runLength = runLength;
 		buffer = new int[Constants.READ_BUFFER];
-		fillBuffer();
+		//fillBuffer();
 	}
 	
 	public int next() throws IOException{
@@ -92,7 +92,6 @@ public class TapeIterator {
 				if (buffer.length == 0){
 					isEOF = true;
 					isEOR = true;
-					System.out.println("PPEEEEEENNG!");
 				}
 			}
 		}

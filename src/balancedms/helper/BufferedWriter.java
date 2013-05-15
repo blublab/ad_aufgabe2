@@ -18,7 +18,7 @@ public class BufferedWriter {
 	
 	public void add(int elem) throws IOException{
 		tape.writeSequence(new int[]{elem}); // No Buffer Style
-		System.out.println("Got "+elem);
+		//System.out.println("Got "+elem);
 //		assert(buffer != null);
 //		if (currentIndex < (Constants.WRITE_BUFFER)){
 //			buffer[currentIndex++] = elem;

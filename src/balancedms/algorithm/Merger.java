@@ -22,6 +22,8 @@ public class Merger {
 	 * targets (alternating with 2*runLength)
 	 * @throws IOException 
 	 */
+	
+	
 	public Tape mergeTapes(int runLength, Tape source1, Tape source2,
 			Tape target1, Tape target2) throws IOException {
 		assert(source1 != null);
@@ -44,14 +46,18 @@ public class Merger {
 			TapeIterator iterator1 	= new TapeIterator(sources[0], runLength);
 			TapeIterator iterator2 	= new TapeIterator(sources[1], runLength);
 			BufferedWriter bw		= new BufferedWriter(targets[0]);
+			//int	currentHighest		
 			
-			while (!iterator1.isEOF && !iterator2.isEOF){
+			while (!(iterator1.isEOF || iterator2.isEOF)){
 				
 				//iteratoren auf neuen Run Synchronisieren (bei EOF bleibt EOR erhalten)
 				iterator1.nextRun();
 				iterator2.nextRun();
 				
-				while (!iterator1.isEOR && !iterator2.isEOR){
+				sources[0].print();
+				
+				while (!(iterator1.isEOR || iterator2.isEOR)){
+					//System.out.println(iterator1.next());
 					int current1 = iterator1.next();
 					int current2 = iterator2.next();
 					if (current1 <= current2) {
@@ -73,19 +79,26 @@ public class Merger {
 				while(!iterator1.isEOR) {bw.add(iterator1.next());}
 
 				bw.flush();
-				System.out.println("ende innere schleife");
-				System.out.flush();
 				if (!(iterator1.isEOF && iterator2.isEOF)){
 					flipTargets();
 					bw.switchToTape(targets[0]);
 					flipped = true;
 				}
 			}
-			System.out.println("ende mittlere schleife");
-			System.out.flush();
+			while(!(iterator2.isEOF)) {bw.add(iterator2.next());}
+			while(!(iterator1.isEOF)) {bw.add(iterator1.next());}
 			bw.flush();
+			System.out.println("Source1: " + sources[0]);
+			sources[0].print();
+			System.out.println("Source2: " + sources[1]);
+			sources[1].print();
+			System.out.println("Target1: " + sources[0]);
+			targets[0].print();
+			System.out.println("Source2: " + sources[1]);
+			targets[1].print();
+			
 			flipSourcesTargets();
-			this.runLength *= 2;
+			runLength *= 2;
 		}
 		
 		return targets[1];
@@ -107,8 +120,31 @@ public class Merger {
 		
 	}
 		
+	
 		// -> Fertig, Rueckgabe
-		
+	
+//	while(flipped){
+//	Iterator srcAit	= source1.iterator();
+//	Iterator srcBit	= source2.iterator();
+//	
+//	while(srcAit.hasNext() && srcBit.hasNext()){
+//		Run runA		= srcAit.next();
+//		Run runB		= srcBit.next();
+//		Iterator runAit	= runA.iterator();
+//		Iterator runBit	= runB.iterator();
+//		TargetWriter tw	= target1.writer();
+//		
+//		while(runAit.hasNext() && runBit.hasNext){
+//			//Merge Elemente
+//		}
+//		//schreibe Elemente aus verbliebenem Run weg
+//		//Flush
+//		//switch Targets
+//	}
+//	switchSourcesTargets();
+//}
+//}
+	
 	//while(flipped)
 	//flipped->false
 	  //while (!(iterator1.EOF && iterator2.EOF))

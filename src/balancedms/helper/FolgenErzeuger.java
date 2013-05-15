@@ -51,7 +51,7 @@ public class FolgenErzeuger {
 			for(int n: zahlen){
 				System.out.println(n + "\t" + zahlen.length);
 			}
-			zahlen = tape.readSequence(15);
+			zahlen = tape.readSequence(16);
 		}
 	}
 	

@@ -104,17 +104,12 @@ public class BinFile implements Tape {
 	@Override
 	public void writeSequence(int[] seq) throws IOException {
 		if (isWritable) {
-			//FileOutputStream fos = new FileOutputStream(file);
-			//BufferedOutputStream bos = new BufferedOutputStream(fos);
 			byte[] temp = new byte[SCHLUESSELGROESSE];
 			for (int i : seq) {
 				temp = convertIntToByteArray(i);
 				bos.write(temp);
-				//FileWriter fw = new FileWriter(file, true);
-				//BufferedWriter bw = new BufferedWriter(fw);
-				//bos.write
 			}
-			bos.flush();
+			bos.flush(); // Fuer Effizienz entfernen??
 		}
 	}
 
@@ -142,6 +137,24 @@ public class BinFile implements Tape {
         buffer[3] = (byte) val;
         
         return buffer;
+	}
+	
+	@Override
+	public String toString(){
+		return file.toString();
+	}
+
+	@Override
+	public void print() throws IOException{
+		resetForRead();
+		int[] zahlen = readSequence(32);
+		while(zahlen.length != 0){
+			for(int n: zahlen){
+				System.out.println(n + "\t" + zahlen.length);
+			}
+			zahlen = readSequence(32);
+		}
+		resetForRead();
 	}
 	
 	@Override
