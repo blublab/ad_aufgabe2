@@ -15,7 +15,7 @@ import org.junit.Test;
 
 import balancedms.algorithm.Merger;
 import balancedms.io.BinFile;
-import balancedms.io.Tape;
+import balancedms.io.OldTape;
 
 
 /**
@@ -24,18 +24,18 @@ import balancedms.io.Tape;
  */
 public class TestMerger {
 
-	List<Tape> tapes	= null;
+	List<OldTape> oldTapes	= null;
 	
 	/**
 	 * @throws java.lang.Exception
 	 */
 	@Before
 	public void setUp() throws Exception {
-		tapes = new ArrayList<Tape>();
-		tapes.add(new BinFile("testTape1.bin"));
-		tapes.add(new BinFile("testTape2.bin"));
-		tapes.add(new BinFile("testTape3.bin"));
-		tapes.add(new BinFile("testTape4.bin"));
+		oldTapes = new ArrayList<OldTape>();
+		oldTapes.add(new BinFile("testTape1.bin"));
+		oldTapes.add(new BinFile("testTape2.bin"));
+		oldTapes.add(new BinFile("testTape3.bin"));
+		oldTapes.add(new BinFile("testTape4.bin"));
 		
 //		int length	= 10;
 //		int[] seq	= new int[length];
@@ -54,13 +54,13 @@ public class TestMerger {
 
 	@Test
 	public void testInitialize() throws IOException {
-		tapes.get(0).resetForWrite();
-		tapes.get(0).writeSequence(new int[]{1,3,5,7,9,11});
+		oldTapes.get(0).resetForWrite();
+		oldTapes.get(0).writeSequence(new int[]{1,3,5,7,9,11});
 		
 		Merger m = new Merger();
-		m.initialize(tapes.get(0), tapes.get(2), tapes.get(3));
+		m.initialize(oldTapes.get(0), oldTapes.get(2), oldTapes.get(3));
 		
-		tapes.get(2).resetForRead();
+		oldTapes.get(2).resetForRead();
 		//int[] seq1 = tapes.get(2).readSequence(len);
 		
 	}

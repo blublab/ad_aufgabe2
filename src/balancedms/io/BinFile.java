@@ -18,7 +18,7 @@ import static balancedms.controls.Constants.*;
  * @author m215025
  *
  */
-public class BinFile implements Tape {
+public class BinFile implements OldTape {
 
 	private File file;
 	private boolean isWritable = true;
@@ -41,10 +41,6 @@ public class BinFile implements Tape {
 		this.bos = new BufferedOutputStream(fos);
 		this.fis = new FileInputStream(file);
 		this.bis = new BufferedInputStream(fis);
-
-
-
-
 	}
 
 	

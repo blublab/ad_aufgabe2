@@ -3,13 +3,13 @@ package balancedms.helper;
 import java.io.IOException;
 
 import balancedms.controls.Constants;
-import balancedms.io.Tape;
+import balancedms.io.OldTape;
 
 public class TapeIterator {
 	public boolean isEOF	= false;
 	public boolean isEOR	= false;
 
-	private Tape tape				= null;
+	private OldTape oldTape				= null;
 	private int[] buffer 			= null;
 	private int runLength			= 0;
 	private boolean becomesEOF		= false;
@@ -17,9 +17,9 @@ public class TapeIterator {
 	private int returnedElements	= 0;
 	private int currentIndex		= 0;
 	
-	public TapeIterator(Tape t, int runLength) throws IOException{
-		this.tape	= t;
-		this.tape.resetForRead();
+	public TapeIterator(OldTape t, int runLength) throws IOException{
+		this.oldTape	= t;
+		this.oldTape.resetForRead();
 		this.runLength = runLength;
 		buffer = new int[Constants.READ_BUFFER];
 		//fillBuffer();
@@ -75,7 +75,7 @@ public class TapeIterator {
 		
 		/*Falls verbleibende Elemente weniger als Buffersize*/
 		if ((this.runLength - returnedElements) <= Constants.READ_BUFFER){
-			buffer = tape.readSequence(this.runLength - returnedElements);
+			buffer = oldTape.readSequence(this.runLength - returnedElements);
 			assert(buffer != null);
 			becomesEOR = true;
 			if (buffer.length < (this.runLength - returnedElements)){
@@ -85,7 +85,7 @@ public class TapeIterator {
 		
 		/*Sonst fuelle gesamten Buffer*/
 		else {
-			buffer = tape.readSequence(Constants.READ_BUFFER);
+			buffer = oldTape.readSequence(Constants.READ_BUFFER);
 			assert(buffer!=null);
 			if (buffer.length < Constants.READ_BUFFER){
 				becomesEOF = true;

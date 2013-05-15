@@ -12,7 +12,7 @@ import java.io.IOException;
 
 
 
-public class TextTape implements Tape{
+public class TextTape implements OldTape{
 	private File file;
 	private int offset = 0;
 	FileWriter fw		= null;

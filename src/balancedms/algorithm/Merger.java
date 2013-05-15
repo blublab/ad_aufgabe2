@@ -1,10 +1,15 @@
 package balancedms.algorithm;
 
 import java.io.IOException;
+import java.util.Iterator;
 
 import balancedms.controls.Constants;
 import balancedms.helper.BufferedWriter;
+import balancedms.helper.PlainRunWriter;
+import balancedms.helper.RunWriter;
 import balancedms.helper.TapeIterator;
+import balancedms.io.OldTape;
+import balancedms.io.Run;
 import balancedms.io.Tape;
 
 public class Merger {
@@ -12,8 +17,8 @@ public class Merger {
 //	private Tape tape2 			= null; 
 //	private Tape tape3 			= null;
 //	private Tape tape4 			= null;
-	private Tape[] targets 		= {null,null};
-	private Tape[] sources		= {null,null};
+	private OldTape[] targets 		= {null,null};
+	private OldTape[] sources		= {null,null};
 	private int runLength		= 0;
 	private boolean flipped		= true;
 	
@@ -26,86 +31,37 @@ public class Merger {
 	
 	public Tape mergeTapes(int runLength, Tape source1, Tape source2,
 			Tape target1, Tape target2) throws IOException {
-		assert(source1 != null);
-		assert(source2 != null);
-		assert(target1 != null);
-		assert(target2 != null);
-		assert(runLength > 0);
 		
-		source1.resetForRead();
-		source2.resetForRead();
-		target1.resetForWrite();
-		target2.resetForWrite();
-		sources 	= new Tape[]{source1, source2};
-		targets		= new Tape[]{target1, target2};
-		this.runLength	= Constants.MEMSORT_BUFFER;
-		
-		//while(flipped){
-		for(int i = 0; i < 1; i++){
+		while(flipped){
 			flipped = false;
-			TapeIterator iterator1 	= new TapeIterator(sources[0], runLength);
-			TapeIterator iterator2 	= new TapeIterator(sources[1], runLength);
-			BufferedWriter bw		= new BufferedWriter(targets[0]);
-			//int	currentHighest		
+			Iterator<Run> srcAit	= source1.iterator();
+			Iterator<Run> srcBit	= source2.iterator();
 			
-			while (!(iterator1.isEOF || iterator2.isEOF)){
+			while(srcAit.hasNext() && srcBit.hasNext()){
+				Run runA		= srcAit.next();
+				Run runB		= srcBit.next();
+				Iterator<Integer> runAit	= runA.iterator();
+				Iterator<Integer> runBit	= runB.iterator();
+				RunWriter prw	= new PlainRunWriter(target1, target2);
 				
-				//iteratoren auf neuen Run Synchronisieren (bei EOF bleibt EOR erhalten)
-				iterator1.nextRun();
-				iterator2.nextRun();
-				
-				sources[0].print();
-				
-				while (!(iterator1.isEOR || iterator2.isEOR)){
-					//System.out.println(iterator1.next());
-					int current1 = iterator1.next();
-					int current2 = iterator2.next();
-					if (current1 <= current2) {
-						while (current1 <= current2 && !(iterator1.isEOR)) {
-							bw.add(current1);
-							current1 = iterator1.next();
-						}
-						bw.add(current1);
-
-					} else {
-						while (current2 < current1 && !(iterator2.isEOR)) {
-							bw.add(current2);
-							current2 = iterator2.next();
-						}
-						bw.add(current2);
-					}
+				while(runAit.hasNext() && runBit.hasNext()){
+					Integer elemA = runAit.next();
+					Integer elemB = runBit.next();
+					prw.merge(elemA, elemB);
 				}
-				while(!iterator2.isEOR) {bw.add(iterator2.next());}
-				while(!iterator1.isEOR) {bw.add(iterator1.next());}
-
-				bw.flush();
-				if (!(iterator1.isEOF && iterator2.isEOF)){
-					flipTargets();
-					bw.switchToTape(targets[0]);
+				//schreibe Elemente aus verbliebenem Run weg
+				//Flush
+				if((srcAit.hasNext() || srcBit.hasNext())){
+					prw.flip();
 					flipped = true;
 				}
 			}
-			while(!(iterator2.isEOF)) {bw.add(iterator2.next());}
-			while(!(iterator1.isEOF)) {bw.add(iterator1.next());}
-			bw.flush();
-			System.out.println("Source1: " + sources[0]);
-			sources[0].print();
-			System.out.println("Source2: " + sources[1]);
-			sources[1].print();
-			System.out.println("Target1: " + sources[0]);
-			targets[0].print();
-			System.out.println("Source2: " + sources[1]);
-			targets[1].print();
-			
-			flipSourcesTargets();
-			runLength *= 2;
+			switchSourcesTargets();
 		}
-		
-		return targets[1];
 	}
-	
-	public void initialize(Tape source, Tape target1, Tape target2) throws IOException {
-		this.targets	= new Tape[]{target1, target2};
+
+	public void initialize(OldTape source, OldTape target1, OldTape target2) throws IOException {
+		this.targets	= new OldTape[]{target1, target2};
 		this.targets[0].resetForWrite();
 		this.targets[1].resetForWrite();
 		source.resetForRead();
@@ -119,31 +75,9 @@ public class Merger {
 		}
 		
 	}
-		
+
 	
-		// -> Fertig, Rueckgabe
-	
-//	while(flipped){
-//	Iterator srcAit	= source1.iterator();
-//	Iterator srcBit	= source2.iterator();
-//	
-//	while(srcAit.hasNext() && srcBit.hasNext()){
-//		Run runA		= srcAit.next();
-//		Run runB		= srcBit.next();
-//		Iterator runAit	= runA.iterator();
-//		Iterator runBit	= runB.iterator();
-//		TargetWriter tw	= target1.writer();
-//		
-//		while(runAit.hasNext() && runBit.hasNext){
-//			//Merge Elemente
-//		}
-//		//schreibe Elemente aus verbliebenem Run weg
-//		//Flush
-//		//switch Targets
-//	}
-//	switchSourcesTargets();
-//}
-//}
+
 	
 	//while(flipped)
 	//flipped->false
@@ -164,7 +98,7 @@ public class Merger {
 	
 	
 	private void flipTargets(){
-		Tape tmp 	= targets[0];
+		OldTape tmp 	= targets[0];
 		targets[0]	= targets[1];
 		targets[1]	= tmp;
 	}
@@ -173,7 +107,7 @@ public class Merger {
 //		for(Tape t: sources){
 //			t.reset();
 //		}
-		Tape[] temp = targets;
+		OldTape[] temp = targets;
 		targets = sources;
 		sources = temp;
 		
