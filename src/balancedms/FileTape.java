@@ -17,21 +17,17 @@ import static balancedms.Constants.*;
 public class FileTape implements Tape {
 
 	private File file;
-	private boolean isWritable = true;
 	private boolean isEoF;
 	private FileInputStream fis = null;
 	private BufferedInputStream bis = null;
 	private FileOutputStream fos = null;
 	private BufferedOutputStream bos = null;
-	//FileWriter fw = null;
-	//BufferedWriter bw = null;
+
 	
 	FileTape(String filename) throws IOException {
 		filename = "./Files/" + filename;
 		File f = new File(filename);
 		this.file = f;
-		//fw = new FileWriter(file, true);
-		//bw = new BufferedWriter(fw);
 		this.fos = new FileOutputStream(file, true);
 		this.bos = new BufferedOutputStream(fos);
 		this.fis = new FileInputStream(file);
@@ -96,26 +92,13 @@ public class FileTape implements Tape {
 
 	@Override
 	public void writeSequence(int[] seq) throws IOException {
-		if (isWritable) {
-			byte[] temp = new byte[SCHLUESSELGROESSE];
-			for (int i : seq) {
-				temp = convertIntToByteArray(i);
-				bos.write(temp);
-			}
-			bos.flush();
+		byte[] temp = new byte[SCHLUESSELGROESSE];
+		for (int i : seq) {
+			temp = convertIntToByteArray(i);
+			bos.write(temp);
 		}
+		bos.flush();
 	}
-
-	@Override
-	public boolean isWritable() {
-		return isWritable;
-	}
-	
-	public void setWritable(boolean isWritable) {
-		this.isWritable = isWritable;
-	}
-
-
 
 	@Override
 	public boolean isEoF() {
@@ -135,9 +118,6 @@ public class FileTape implements Tape {
         return buffer;
 	}
 	
-	public void reset() throws IOException{
-	}
-	
 	public void resetForWrite() throws IOException {
 		bos.close();
 		fos.close();
@@ -153,7 +133,10 @@ public class FileTape implements Tape {
 		fis.close();
 		fis = new FileInputStream(file);
 		bis = new BufferedInputStream(fis);
-		isEoF = false;
+		isEoF = true;
+		if(bis.available() > 0){ 		//Optimieren?????
+			isEoF = false;
+		}
 	}
 	
 	public String toString(){
@@ -162,5 +145,16 @@ public class FileTape implements Tape {
 	
 	public void setEoF(boolean b){
 		isEoF = b;
+	}
+	
+	public File getFile(){
+		return file;
+	}
+	
+	public void close() throws IOException{
+		bos.close();
+		fos.close();
+		bis.close();
+		fos.close();
 	}
 }

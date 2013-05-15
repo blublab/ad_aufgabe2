@@ -65,6 +65,15 @@ public class Start {
 
 		FolgenErzeuger.ausgabe(tape4);
 	
+		tape1.close();
+		tape2.close();
+		tape3.close();
+		tape4.close();
+		
+		tape1.getFile().delete();
+		tape2.getFile().delete();
+		tape3.getFile().delete();
+		tape4.getFile().delete();
 		
 	}
 

@@ -13,7 +13,9 @@ public class Merger2 {
 	private Tape source2 = null;
 	private int src2Ind = 0;
 	private Tape target = null;
-	boolean EoR = false;
+	boolean s1EoR = false;
+	boolean s2EoR = false;
+	boolean ende = false;
 	
 	public void initialize(Tape source, Tape target1, Tape target2) throws IOException {
 		MemSort ms = new LibrarySort();
@@ -33,16 +35,18 @@ public class Merger2 {
 		Tape[] sources = new Tape[] { tape1, tape2 };
 		Tape[] targets = new Tape[] { tape3, tape4 };
 		
-		while(!(runSize > Constants.FOLGENLAENGE)){
+		while(!ende){
+//		while(runSize <= Constants.FOLGENLAENGE){
+
 			mergeRun(runSize, sources[0], sources[1], targets[0]);
 			writeBuf = new int[Constants.WRITE_BUFFER];
 			writeBufInd = 0;
 			runInd1 =0;
 			runInd2 =0;
-			EoR = false;
+			s1EoR = false;
+			s2EoR = false;
 			src1Ind = 0;
 			src2Ind = 0;
-			targets = flipTargets(targets);
 			if(sources[0].isEoF() && sources[1].isEoF()){
 				
 				
@@ -73,8 +77,9 @@ public class Merger2 {
 				Tape[] temp = sources;
 				sources = flipT2S(targets);
 				targets = flipS2T(temp);
-				runSize *= 2; // Prüfen, ob runSize > folgenlaenge
-			}
+				runSize *= 2;
+				if(sources[0].isEoF() || sources[1].isEoF()) ende = true;
+			} else 	targets = flipTargets(targets);
 		}
 	}
 	
@@ -82,31 +87,30 @@ public class Merger2 {
 		this.source1 = source1;
 		this.source2 = source2;
 		this.target = target;
-
+		
 		int[] src1Buf = source1.readSequence(Constants.READ_BUFFER);
 		int[] src2Buf = source2.readSequence(Constants.READ_BUFFER);
 		int runInd = 0;
-		while((runInd < (2*runSize)) && (!(source1.isEoF()) || !(source2.isEoF()))){ // 
-			if((runInd1 >= runSize) && !(runInd2 >= runSize)){
-				writeBuf = new int[(2*runSize)-runInd];
+		while((runInd < (2*runSize)) && (!(source1.isEoF()) || !(source2.isEoF()))){ 
+			
+			if((runInd1 >= runSize) && (runInd2 < runSize)){
+				writeBuf = new int[src2Buf.length];
 				writeBufInd = 0;
-				while(!(runInd2 >= runSize)){
+				while(!(runInd2 >= runSize) && !s2EoR && (src2Buf.length > 0)){
 					src2Buf = source2Won(src2Buf, runSize);
 					runInd++;
 				}
 			}
-			if((runInd2 >= runSize) && !(runInd1 >= runSize)){
-				writeBuf = new int[(2*runSize)-runInd];
+			if((runInd2 >= runSize) && (runInd1 < runSize)){
+				writeBuf = new int[src1Buf.length];
 				writeBufInd = 0;
-				while(!(runInd1 >= runSize)){
+				while(!(runInd1 >= runSize) && !s1EoR && (src1Buf.length > 0)){
 					src1Buf = source1Won(src1Buf, runSize);
 					runInd++;
 				}
 			}
 			if(source1.isEoF()){
-				writeBuf = new int[(2*runSize)-runInd];
-				writeBufInd = 0;
-				while((runInd < runSize*2) && !(source2.isEoF()) && !EoR){
+				while((runInd < runSize*2) && !(source2.isEoF()) && !s2EoR){
 					src2Buf = source2Won(src2Buf, runSize);
 					runInd++;
 				}
@@ -114,16 +118,14 @@ public class Merger2 {
 				source2.setEoF(true);
 			}
 			if(source2.isEoF()){
-				writeBuf = new int[(2*runSize)-runInd];
-				writeBufInd = 0;
-				while((runInd < runSize*2) && !(source1.isEoF()) && !EoR){
+				while((runInd < runSize*2) && !(source1.isEoF()) && !s1EoR){
 					src1Buf = source1Won(src1Buf, runSize);
 					runInd++;
 				}
 				runInd++;
 				source1.setEoF(true);
 			}
-			if((runInd < (2*runSize)&&!EoR&& !source1.isEoF() && !source2.isEoF())){
+			if((runInd < (2*runSize)&& !s1EoR && !s2EoR && !source1.isEoF() && !source2.isEoF())){
 				if(src1Buf[src1Ind] <= src2Buf[src2Ind]){
 					src1Buf = source1Won(src1Buf, runSize);
 				} else {
@@ -143,7 +145,7 @@ public class Merger2 {
 		src1Ind++;
 		runInd1++;
 		if (runInd1 >= runSize){
-			EoR = true;
+			s1EoR = true;
 			return new int[0];
 		}
 		return checkReadBuf1(buffer);
@@ -166,7 +168,7 @@ public class Merger2 {
 		src2Ind++;
 		runInd2++;
 		if (runInd2 >= runSize){
-			EoR = true;
+			s2EoR = true;
 			return new int[0];
 		}
 		return checkReadBuf2(buffer);
