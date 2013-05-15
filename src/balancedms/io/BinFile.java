@@ -18,7 +18,7 @@ import static balancedms.controls.Constants.*;
  * @author m215025
  *
  */
-public class FileTape implements Tape {
+public class BinFile implements Tape {
 
 	private File file;
 	private boolean isWritable = true;
@@ -31,7 +31,7 @@ public class FileTape implements Tape {
 	//FileWriter fw = null;
 	//BufferedWriter bw = null;
 	
-	public FileTape(String filename) throws IOException {
+	public BinFile(String filename) throws IOException {
 		filename = "./Files/" + filename;
 		File f = new File(filename);
 		this.file = f;
@@ -144,6 +144,7 @@ public class FileTape implements Tape {
         return buffer;
 	}
 	
+	@Override
 	public void resetForWrite() throws IOException{
 		bos.close();
 		fos.close();
@@ -154,6 +155,7 @@ public class FileTape implements Tape {
 		bos = new BufferedOutputStream(fos);
 	}
 	
+	@Override
 	public void resetForRead() throws IOException{
 		bis.close();
 		fis.close();

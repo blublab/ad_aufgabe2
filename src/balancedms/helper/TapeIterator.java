@@ -50,7 +50,6 @@ public class TapeIterator {
 					isEOR = true;
 					}
 				incrementAndCheck();
-				System.out.println("hier");
 				return buffer[currentIndex];
 			}
 		}
@@ -93,6 +92,7 @@ public class TapeIterator {
 				if (buffer.length == 0){
 					isEOF = true;
 					isEOR = true;
+					System.out.println("PPEEEEEENNG!");
 				}
 			}
 		}

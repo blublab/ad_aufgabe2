@@ -9,8 +9,9 @@ import java.io.IOException;
 import balancedms.algorithm.Merger;
 import balancedms.controls.Constants;
 import balancedms.helper.FolgenErzeuger;
-import balancedms.io.FileTape;
+import balancedms.io.BinFile;
 import balancedms.io.Tape;
+import balancedms.io.TextTape;
 import static balancedms.controls.Constants.*;
 
 public class Start {
@@ -22,22 +23,28 @@ public class Start {
 		System.out.println("----Ausgeglichenes 4-Wege MergeSort----");
 		
 		System.out.print("Erzeuge Tapes\t\t\t");
-		Tape tape1 = new FileTape("tape1.dat");
-		Tape tape2 = new FileTape("tape2.dat");
-		Tape tape3 = new FileTape("tape3.dat");
-		Tape tape4 = new FileTape("tape4.dat");
+		Tape tape1 = new TextTape("Files/tape1.txt");
+		Tape tape2 = new TextTape("Files/tape2.txt");
+		Tape tape3 = new TextTape("Files/tape3.txt");
+		Tape tape4 = new TextTape("Files/tape4.txt");
 		System.out.println("abgeschlossen");
-		FolgenErzeuger.ausgabe(tape2);
+		
+
 		
 		System.out.print("Beginne Folgenerzeugung\t\t");
 		FolgenErzeuger.erzeuge(tape1, Constants.FOLGENLAENGE);
 		System.out.println("abgeschlossen");
+//		FolgenErzeuger.ausgabe(tape1);
 		
 		Merger m = new Merger();
 		
 		System.out.print("Befülle StartTapes (MemSort)\t");
 		m.initialize(tape1, tape3, tape4);
 		System.out.println("abgeschlossen");
+//		System.out.println("\ntape3:");
+//		FolgenErzeuger.ausgabe(tape3);
+//		System.out.println("\ntape4:");
+//		FolgenErzeuger.ausgabe(tape4);
 		
 		System.out.print("Starte Mergen der Tapes\t\t");
 		m.mergeTapes(MEMSORT_BUFFER, tape3, tape4, tape1, tape2);

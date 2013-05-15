@@ -12,18 +12,20 @@ public class BufferedWriter {
 	
 	public BufferedWriter(Tape t) throws IOException{
 		tape = t;
-		tape.resetForWrite();
+		//tape.resetForWrite();
 		buffer = new int[Constants.WRITE_BUFFER];
 	}
 	
 	public void add(int elem) throws IOException{
-		assert(buffer != null);
-		if (currentIndex <= (Constants.WRITE_BUFFER -1)){
-			buffer[currentIndex++] = elem;
-		} else {
-			flush();
-			buffer[currentIndex++] = elem;
-		}
+		tape.writeSequence(new int[]{elem}); // No Buffer Style
+		System.out.println("Got "+elem);
+//		assert(buffer != null);
+//		if (currentIndex < (Constants.WRITE_BUFFER)){
+//			buffer[currentIndex++] = elem;
+//		} else {
+//			flush();
+//			buffer[currentIndex++] = elem;
+//		}
 	}
 	
 	public void switchToTape(Tape t) throws IOException{
@@ -33,10 +35,11 @@ public class BufferedWriter {
 	}
 	
 	public void flush() throws IOException{
-		tape.writeSequence(buffer);
+		//if (buffer.length > 0)
+		//	tape.writeSequence(buffer);
 //		for (int i: buffer){
 //			System.out.println("Schreibe: "+i);
 //		}
-		currentIndex = 0;
+		//currentIndex = 0;
 	}
 }

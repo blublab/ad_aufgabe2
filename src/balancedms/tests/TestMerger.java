@@ -14,7 +14,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import balancedms.algorithm.Merger;
-import balancedms.io.FileTape;
+import balancedms.io.BinFile;
 import balancedms.io.Tape;
 
 
@@ -32,10 +32,10 @@ public class TestMerger {
 	@Before
 	public void setUp() throws Exception {
 		tapes = new ArrayList<Tape>();
-		tapes.add(new FileTape("testTape1.bin"));
-		tapes.add(new FileTape("testTape2.bin"));
-		tapes.add(new FileTape("testTape3.bin"));
-		tapes.add(new FileTape("testTape4.bin"));
+		tapes.add(new BinFile("testTape1.bin"));
+		tapes.add(new BinFile("testTape2.bin"));
+		tapes.add(new BinFile("testTape3.bin"));
+		tapes.add(new BinFile("testTape4.bin"));
 		
 //		int length	= 10;
 //		int[] seq	= new int[length];
