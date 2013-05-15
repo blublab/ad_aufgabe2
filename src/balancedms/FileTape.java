@@ -42,24 +42,54 @@ public class FileTape implements Tape {
 
 	}
 
+//	@Override
+//	public int[] readSequence(int len) throws IOException {
+//		if(bis.available() <= len){
+//			isEoF = true;
+//			len = bis.available();
+//		}
+//		byte[] input = new byte[SCHLUESSELGROESSE];
+//		int[] seq	= new int[len];
+//		//FileInputStream fis = new FileInputStream(file);
+//		//BufferedInputStream bis = new BufferedInputStream(fis);
+//		for (int i = 0; i<len; i++){
+//			bis.read(input, 0, SCHLUESSELGROESSE);
+//			int ret = 0;
+//			for(byte b: input){
+//				ret = ((ret<<8)&0xffffff00);
+//				ret = ret | (b&0x000000ff);
+//			}
+//			seq[i] = ret;
+//		}
+//		return seq;
+//	}
+
 	@Override
 	public int[] readSequence(int len) throws IOException {
-		if(bis.available() <= len){
+		byte[] input = new byte[Constants.SCHLUESSELGROESSE];
+		int[] seq = null;
+
+		int avail = 0;
+
+		avail = bis.available() / 4;
+
+		if (avail < len){
 			isEoF = true;
-			len = bis.available();
+			len = avail;
 		}
-		byte[] input = new byte[SCHLUESSELGROESSE];
-		int[] seq	= new int[len];
-		//FileInputStream fis = new FileInputStream(file);
-		//BufferedInputStream bis = new BufferedInputStream(fis);
-		for (int i = 0; i<len; i++){
-			bis.read(input, 0, SCHLUESSELGROESSE);
-			int ret = 0;
-			for(byte b: input){
-				ret = ((ret<<8)&0xffffff00);
-				ret = ret | (b&0x000000ff);
+		seq = new int[len];
+
+		for (int i = 0; i < len; i++) {
+			if (bis.read(input) != -1) {
+				int ret = 0;
+				for (byte b : input) {
+					ret = ((ret << 8) & 0xffffff00);
+					ret = ret | (b & 0x000000ff);
+				}
+				seq[i] = ret;
+			} else {
+				isEoF = true;
 			}
-			seq[i] = ret;
 		}
 		return seq;
 	}
@@ -106,8 +136,6 @@ public class FileTape implements Tape {
 	}
 	
 	public void reset() throws IOException{
-		isEoF = false;
-		resetForRead();
 	}
 	
 	public void resetForWrite() throws IOException {
@@ -125,5 +153,14 @@ public class FileTape implements Tape {
 		fis.close();
 		fis = new FileInputStream(file);
 		bis = new BufferedInputStream(fis);
+		isEoF = false;
+	}
+	
+	public String toString(){
+		return file.toString();
+	}
+	
+	public void setEoF(boolean b){
+		isEoF = b;
 	}
 }

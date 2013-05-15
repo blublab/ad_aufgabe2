@@ -37,13 +37,14 @@ public class FolgenErzeuger {
 
 	public static void ausgabe(Tape tape) throws IOException {
 		tape.resetForRead();
-		int[] zahlen = tape.readSequence(1);
+		int[] zahlen = tape.readSequence(10000);
 		while (zahlen.length != 0) {
 			for (int n : zahlen) {
 				System.out.println(n + "\t" + zahlen.length);
 			}
-			zahlen = tape.readSequence(1);
+			zahlen = tape.readSequence(10000);
 		}
+		tape.resetForRead();
 	}
 	
 

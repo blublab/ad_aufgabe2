@@ -22,28 +22,21 @@ public class Start {
 		Tape tape4 = new FileTape("tape4.dat");
 
 		Merger2 m = new Merger2();
-		m.initialize(tape1, tape2, tape3);
+		m.initialize(tape1, tape3, tape4);
 		
-		System.out.println("==================== Teil1 ====================");
-
-		FolgenErzeuger.ausgabe(tape2);
-		
-		System.out.println("==================== Teil2 ====================");
+		System.out.println("==================== Tape3 ====================");
 
 		FolgenErzeuger.ausgabe(tape3);
 		
-		tape1.reset();
-		tape2.reset();
-		tape3.reset();
-		tape4.reset();
+		System.out.println("==================== Tape4 ====================");
+
+		FolgenErzeuger.ausgabe(tape4);
+		
 
 		
-		m.mergen(2, tape2, tape3, tape4, tape1);
+		m.mergen(MEMSORT_BUFFER, tape3, tape4, tape1, tape2);
 		
-		tape1.reset();
-		tape2.reset();
-		tape3.reset();
-		tape4.reset();
+
 		System.out.println("====================  ====================");
 		
 		System.out.println("====================  ====================");
@@ -58,10 +51,7 @@ public class Start {
 		
 		
 		
-		tape1.reset();
-		tape2.reset();
-		tape3.reset();
-		tape4.reset();
+
 		System.out.println("==================== Tape1 ====================");
 
 		FolgenErzeuger.ausgabe(tape1);

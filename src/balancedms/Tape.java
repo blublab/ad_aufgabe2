@@ -11,4 +11,5 @@ public interface Tape {
 	void reset() throws IOException;
 	public void resetForWrite() throws IOException;
 	public void resetForRead() throws IOException;
+	public void setEoF(boolean b);
 }
