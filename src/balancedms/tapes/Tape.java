@@ -1,4 +1,4 @@
-package balancedms;
+package balancedms.tapes;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,4 +13,5 @@ public interface Tape {
 	void setEoF(boolean b);
 	File getFile();
 	void close() throws IOException;
+	void print() throws IOException;
 }

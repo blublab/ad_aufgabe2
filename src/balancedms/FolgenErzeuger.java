@@ -2,7 +2,12 @@ package balancedms;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
+
+import balancedms.tapes.Tape;
 
 /**
  * Erzeugt eine Zufallsfolge und schreibt diese in die Datei "z:/folge.dat"
@@ -23,16 +28,30 @@ public class FolgenErzeuger {
 	
 	private FolgenErzeuger(){};
 
-	public static void erzeuge(Tape tape, int anzahl) throws FileNotFoundException, IOException{
+	public static void erzeuge(Tape tape, BigInteger anzahl) throws FileNotFoundException, IOException{
 		Random randomizer = new Random();
 		tape.resetForWrite();
 
-		int[] temp = new int[anzahl];
-		for (int i=0;i<anzahl;i++) {
+		List<Integer> temp = new ArrayList<Integer>();
+		
+		BigInteger eins = BigInteger.valueOf(1);
+		for (BigInteger i = BigInteger.valueOf(0); !i.equals(anzahl);i =  i.add(eins)) {
 			int zufallszahl = (lowerBound + randomizer.nextInt((upperBound) + randomizer.nextInt((upperBound))));
-			temp[i] = zufallszahl;
+			temp.add(zufallszahl);
 		}
-		tape.writeSequence(temp);
+		int bufferSize = 10;
+		int [] ret = new int[bufferSize];
+		int n = 0;
+		for (int i = 0; i< temp.size()+1; i++){
+			if(n < bufferSize){
+				ret[i] = temp.get(i);
+				n++;
+			} else {
+				tape.writeSequence(ret);
+				ret = new int[bufferSize];
+				n = 0;
+			}
+		}
 	 }
 
 	public static void ausgabe(Tape tape) throws IOException {

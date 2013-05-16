@@ -1,19 +1,23 @@
 package balancedms;
 
+import java.math.BigInteger;
+
 /**
  * Kontrollparameter fuer Balanced 4-way Mergesort
  * 
  *	Nicht instanziierbar
  */
-final class Constants {
+public final class Constants {
 	private Constants(){};
 	
-	static final int SCHLUESSELGROESSE	= 4;		// Lanege eines Schluessels in Bytes
+	public static final int SCHLUESSELGROESSE	= 4;		// Lanege eines Schluessels in Bytes
 
-	
-	static final int FOLGENLAENGE		= 1000;		// Anzahl der zu sortierenden Schluessel
-	static final int MEMSORT_BUFFER		= 1;		// Anzahl der Schluessel die gleichzeitig 
+	static BigInteger temp1 =  BigInteger.valueOf(10);
+	static BigInteger temp2 =  BigInteger.valueOf(1);
+	static BigInteger bla = temp1.multiply(temp2);
+	public static final BigInteger FOLGENLAENGE		= bla;		// Anzahl der zu sortierenden Schluessel
+	public static final int MEMSORT_BUFFER		= 2;		// Anzahl der Schluessel die gleichzeitig 
 													// in den Speicher geladen werden
-	static final int READ_BUFFER		= Math.max(1,MEMSORT_BUFFER/2);
-	static final int WRITE_BUFFER		= Math.max(1,MEMSORT_BUFFER/2);
+	public static final int READ_BUFFER		= 1; //Math.max(1,MEMSORT_BUFFER/2);
+	public static final int WRITE_BUFFER		= 1; //Math.max(1,MEMSORT_BUFFER/2);
 }

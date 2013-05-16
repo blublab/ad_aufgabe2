@@ -2,6 +2,8 @@ package balancedms;
 
 import java.io.IOException;
 
+import balancedms.tapes.Tape;
+
 public class Merger2 {
 	
 	private int writeBufInd = 0;
