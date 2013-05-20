@@ -56,8 +56,9 @@ public class Merger {
 					flipped = true;
 				}
 			}
-			switchSourcesTargets();
+			//switchSourcesTargets();
 		}
+		return null;
 	}
 
 	public void initialize(OldTape source, OldTape target1, OldTape target2) throws IOException {
