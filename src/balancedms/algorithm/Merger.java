@@ -1,7 +1,9 @@
 package balancedms.algorithm;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import balancedms.controls.Constants;
 import balancedms.helper.BufferedWriter;
@@ -61,7 +63,13 @@ public class Merger {
 		return null;
 	}
 
-	public void initialize(OldTape source, OldTape target1, OldTape target2) throws IOException {
+	public void initialize(Tape initialSequence, int numberTapes) throws IOException {
+		List<Tape> tapes	= new ArrayList<Tape>();
+		tapes.add(initialSequence);
+		for (int i = 0; i < numberTapes-1; i++){
+			tapes.add(new Tape());
+		}
+		
 		this.targets	= new OldTape[]{target1, target2};
 		this.targets[0].resetForWrite();
 		this.targets[1].resetForWrite();
@@ -74,7 +82,6 @@ public class Merger {
 			flipTargets();
 			seq = source.readSequence(Constants.MEMSORT_BUFFER);
 		}
-		
 	}
 
 	
