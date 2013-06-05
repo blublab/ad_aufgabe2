@@ -12,7 +12,7 @@ import java.io.IOException;
 
 
 
-public class TextTape implements OldTape{
+public class _TextTape implements _Tape{
 	private File file;
 	private int offset = 0;
 	FileWriter fw		= null;
@@ -21,7 +21,7 @@ public class TextTape implements OldTape{
 	BufferedWriter bw	= null;
 	//FileWriter fw = new FileWriter(file, true);
 	
-	public TextTape(String filename) throws IOException{
+	public _TextTape(String filename) throws IOException{
 		this.file = new File(filename);
 		this.file.setWritable(true);
 		fw = new FileWriter(file, true);

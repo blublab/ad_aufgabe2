@@ -18,7 +18,7 @@ import static balancedms.controls.Constants.*;
  * @author m215025
  *
  */
-public class BinFile implements OldTape {
+public class _BinFile implements _Tape {
 
 	private File file;
 	private boolean isWritable = true;
@@ -31,7 +31,7 @@ public class BinFile implements OldTape {
 	//FileWriter fw = null;
 	//BufferedWriter bw = null;
 	
-	public BinFile(String filename) throws IOException {
+	public _BinFile(String filename) throws IOException {
 		filename = "./Files/" + filename;
 		File f = new File(filename);
 		this.file = f;

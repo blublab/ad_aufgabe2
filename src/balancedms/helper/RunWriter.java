@@ -3,7 +3,7 @@
  */
 package balancedms.helper;
 
-import balancedms.io.Tape;
+import balancedms.io._BinTape;
 
 /**
  * Schreibt uebergebene Elemente auf die Runs von Tapes die er verwaltet
@@ -18,5 +18,5 @@ public interface RunWriter {
 	public void flip();
 	
 	/* Ersetzt die aktuellen Tapes durch die uebergebenen*/
-	public void  replaceAll(Tape t1, Tape t2);
+	public void  replaceAll(_BinTape t1, _BinTape t2);
 }

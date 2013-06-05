@@ -3,14 +3,14 @@ package balancedms.helper;
 import java.io.IOException;
 
 import balancedms.controls.Constants;
-import balancedms.io.OldTape;
+import balancedms.io._Tape;
 
 public class BufferedWriter {
-	private OldTape oldTape			= null;
+	private _Tape oldTape			= null;
 	private int[] buffer		= null;
 	private int currentIndex	= 0;
 	
-	public BufferedWriter(OldTape t) throws IOException{
+	public BufferedWriter(_Tape t) throws IOException{
 		oldTape = t;
 		//tape.resetForWrite();
 		buffer = new int[Constants.WRITE_BUFFER];
@@ -28,7 +28,7 @@ public class BufferedWriter {
 //		}
 	}
 	
-	public void switchToTape(OldTape t) throws IOException{
+	public void switchToTape(_Tape t) throws IOException{
 		flush();
 		oldTape = t;
 		

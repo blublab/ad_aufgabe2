@@ -2,7 +2,7 @@ package balancedms.io;
 
 import java.io.IOException;
 
-public interface OldTape {
+public interface _Tape {
 	public int[] readSequence(int len) throws IOException;
 	void writeSequence(int[] seq) throws IOException;
 	//boolean isWritable();

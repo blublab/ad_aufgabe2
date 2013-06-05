@@ -7,7 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Random;
 
-import balancedms.io.OldTape;
+import balancedms.io._Tape;
 
 /**
  * Erzeugt eine Zufallsfolge und schreibt diese in die Datei "z:/folge.dat"
@@ -28,7 +28,7 @@ public class FolgenErzeuger {
 	
 	private FolgenErzeuger(){};
 
-	public static void erzeuge(OldTape oldTape, int anzahl) throws FileNotFoundException, IOException{
+	public static void erzeuge(_Tape oldTape, int anzahl) throws FileNotFoundException, IOException{
 		Random randomizer = new Random();
 //		File datei = new File("./Files/" + tape);
 //		FileOutputStream fos = new FileOutputStream(datei);
@@ -44,7 +44,7 @@ public class FolgenErzeuger {
 		oldTape.writeSequence(temp);
 	 }
 	
-	public static void ausgabe(OldTape oldTape) throws IOException{
+	public static void ausgabe(_Tape oldTape) throws IOException{
 		oldTape.resetForRead();
 		int[] zahlen = oldTape.readSequence(16);
 		while(zahlen.length != 0){

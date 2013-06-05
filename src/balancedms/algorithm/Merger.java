@@ -10,8 +10,9 @@ import balancedms.helper.BufferedWriter;
 import balancedms.helper.PlainRunWriter;
 import balancedms.helper.RunWriter;
 import balancedms.helper.TapeIterator;
-import balancedms.io.OldTape;
-import balancedms.io.Run;
+import balancedms.io.Tape;
+import balancedms.io._Tape;
+import balancedms.io._Run;
 import balancedms.io.Tape;
 
 public class Merger {
@@ -19,8 +20,8 @@ public class Merger {
 //	private Tape tape2 			= null; 
 //	private Tape tape3 			= null;
 //	private Tape tape4 			= null;
-	private OldTape[] targets 		= {null,null};
-	private OldTape[] sources		= {null,null};
+	private _Tape[] targets 		= {null,null};
+	private _Tape[] sources		= {null,null};
 	private int runLength		= 0;
 	private boolean flipped		= true;
 	
@@ -36,12 +37,12 @@ public class Merger {
 		
 		while(flipped){
 			flipped = false;
-			Iterator<Run> srcAit	= source1.iterator();
-			Iterator<Run> srcBit	= source2.iterator();
+			Iterator<_Run> srcAit	= source1.iterator();
+			Iterator<_Run> srcBit	= source2.iterator();
 			
 			while(srcAit.hasNext() && srcBit.hasNext()){
-				Run runA		= srcAit.next();
-				Run runB		= srcBit.next();
+				_Run runA		= srcAit.next();
+				_Run runB		= srcBit.next();
 				Iterator<Integer> runAit	= runA.iterator();
 				Iterator<Integer> runBit	= runB.iterator();
 				RunWriter prw	= new PlainRunWriter(target1, target2);
@@ -64,13 +65,20 @@ public class Merger {
 	}
 
 	public void initialize(Tape initialSequence, int numberTapes) throws IOException {
-		List<Tape> tapes	= new ArrayList<Tape>();
-		tapes.add(initialSequence);
-		for (int i = 0; i < numberTapes-1; i++){
-			tapes.add(new Tape());
-		}
+		assert(numberTapes%2 == 0); //Es werden zwei gleich grosse Gruppen von Tapes angenommen
 		
-		this.targets	= new OldTape[]{target1, target2};
+		List<Tape> group1		= new ArrayList<Tape>();
+		List<Tape> group2		= new ArrayList<Tape>();
+		List<List<Tape>> tapes	= new ArrayList<List<Tape>>();
+		
+		for (List<Tape> l : tapes) {
+			for (int i = 0; i < numberTapes / 2; i++) {
+				l.add(new BinTape());
+			}
+		}
+
+		
+		this.targets	= new _Tape[]{target1, target2};
 		this.targets[0].resetForWrite();
 		this.targets[1].resetForWrite();
 		source.resetForRead();
@@ -106,7 +114,7 @@ public class Merger {
 	
 	
 	private void flipTargets(){
-		OldTape tmp 	= targets[0];
+		_Tape tmp 	= targets[0];
 		targets[0]	= targets[1];
 		targets[1]	= tmp;
 	}
@@ -115,7 +123,7 @@ public class Merger {
 //		for(Tape t: sources){
 //			t.reset();
 //		}
-		OldTape[] temp = targets;
+		_Tape[] temp = targets;
 		targets = sources;
 		sources = temp;
 		

@@ -14,18 +14,18 @@ import java.util.UUID;
 
 import balancedms.controls.Constants;
 
-public class BinFileRun implements Run {
+public class _BinFileRun implements _Run {
 	
 	private File file					= null;
 	private FileInputStream fis 		= null;
 	private BufferedInputStream bis 	= null;
 	private FileOutputStream fos 		= null;
 	private BufferedOutputStream bos 	= null;
-	private boolean isEoF	= false;
-	private long read		= 0;
-	private long written	= 0;
+	private boolean isEoF				= false;
+	private long read					= 0;
+	private long written				= 0;
 	
-	public BinFileRun() throws FileNotFoundException{
+	public _BinFileRun() throws FileNotFoundException{
 		UUID id = UUID.randomUUID();
 		file = new File("./Files/" + id);
 		this.fos = new FileOutputStream(file, true);

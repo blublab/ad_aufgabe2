@@ -3,13 +3,13 @@ package balancedms.helper;
 import java.io.IOException;
 
 import balancedms.controls.Constants;
-import balancedms.io.OldTape;
+import balancedms.io._Tape;
 
 public class TapeIterator {
 	public boolean isEOF	= false;
 	public boolean isEOR	= false;
 
-	private OldTape oldTape				= null;
+	private _Tape oldTape				= null;
 	private int[] buffer 			= null;
 	private int runLength			= 0;
 	private boolean becomesEOF		= false;
@@ -17,7 +17,7 @@ public class TapeIterator {
 	private int returnedElements	= 0;
 	private int currentIndex		= 0;
 	
-	public TapeIterator(OldTape t, int runLength) throws IOException{
+	public TapeIterator(_Tape t, int runLength) throws IOException{
 		this.oldTape	= t;
 		this.oldTape.resetForRead();
 		this.runLength = runLength;

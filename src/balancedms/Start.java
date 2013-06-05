@@ -9,9 +9,9 @@ import java.io.IOException;
 import balancedms.algorithm.Merger;
 import balancedms.controls.Constants;
 import balancedms.helper.FolgenErzeuger;
-import balancedms.io.BinFile;
-import balancedms.io.OldTape;
-import balancedms.io.TextTape;
+import balancedms.io._BinFile;
+import balancedms.io._Tape;
+import balancedms.io._TextTape;
 import static balancedms.controls.Constants.*;
 
 public class Start {
@@ -23,10 +23,10 @@ public class Start {
 		System.out.println("----Ausgeglichenes 4-Wege MergeSort----");
 		
 		System.out.print("Erzeuge Tapes\t\t\t");
-		OldTape tape1 = new TextTape("Files/tape1.txt");
-		OldTape tape2 = new TextTape("Files/tape2.txt");
-		OldTape tape3 = new TextTape("Files/tape3.txt");
-		OldTape tape4 = new TextTape("Files/tape4.txt");
+		_Tape tape1 = new _TextTape("Files/tape1.txt");
+		_Tape tape2 = new _TextTape("Files/tape2.txt");
+		_Tape tape3 = new _TextTape("Files/tape3.txt");
+		_Tape tape4 = new _TextTape("Files/tape4.txt");
 		System.out.println("abgeschlossen");
 		
 

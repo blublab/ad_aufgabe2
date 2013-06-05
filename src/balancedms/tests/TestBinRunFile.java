@@ -8,15 +8,15 @@ import java.util.Iterator;
 import org.junit.Before;
 import org.junit.Test;
 
-import balancedms.io.BinFileRun;
+import balancedms.io._BinFileRun;
 
 public class TestBinRunFile {
 
-	BinFileRun bfr = null;
+	_BinFileRun bfr = null;
 	
 	@Before
 	public void setUp() throws Exception {
-		bfr	= new BinFileRun();
+		bfr	= new _BinFileRun();
 	}
 
 	@Test

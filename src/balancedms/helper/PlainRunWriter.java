@@ -3,13 +3,13 @@ package balancedms.helper;
 import java.util.ArrayList;
 import java.util.List;
 
-import balancedms.io.Tape;
+import balancedms.io._BinTape;
 
 public class PlainRunWriter implements RunWriter{
-	List<Tape> tapes = null;
+	List<_BinTape> tapes = null;
 	
-	public PlainRunWriter(Tape t1, Tape t2){
-		tapes = new ArrayList<Tape>();
+	public PlainRunWriter(_BinTape t1, _BinTape t2){
+		tapes = new ArrayList<_BinTape>();
 		tapes.add(t1);
 		tapes.add(t2);
 	}
@@ -26,7 +26,7 @@ public class PlainRunWriter implements RunWriter{
 	}
 
 	@Override
-	public void replaceAll(Tape t1, Tape t2) {
+	public void replaceAll(_BinTape t1, _BinTape t2) {
 		tapes.clear();
 		tapes.add(t1);
 		tapes.add(t2);		

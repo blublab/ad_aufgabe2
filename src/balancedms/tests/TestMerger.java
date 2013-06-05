@@ -14,8 +14,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import balancedms.algorithm.Merger;
-import balancedms.io.BinFile;
-import balancedms.io.OldTape;
+import balancedms.io._BinFile;
+import balancedms.io._Tape;
 
 
 /**
@@ -24,18 +24,18 @@ import balancedms.io.OldTape;
  */
 public class TestMerger {
 
-	List<OldTape> oldTapes	= null;
+	List<_Tape> oldTapes	= null;
 	
 	/**
 	 * @throws java.lang.Exception
 	 */
 	@Before
 	public void setUp() throws Exception {
-		oldTapes = new ArrayList<OldTape>();
-		oldTapes.add(new BinFile("testTape1.bin"));
-		oldTapes.add(new BinFile("testTape2.bin"));
-		oldTapes.add(new BinFile("testTape3.bin"));
-		oldTapes.add(new BinFile("testTape4.bin"));
+		oldTapes = new ArrayList<_Tape>();
+		oldTapes.add(new _BinFile("testTape1.bin"));
+		oldTapes.add(new _BinFile("testTape2.bin"));
+		oldTapes.add(new _BinFile("testTape3.bin"));
+		oldTapes.add(new _BinFile("testTape4.bin"));
 		
 //		int length	= 10;
 //		int[] seq	= new int[length];
