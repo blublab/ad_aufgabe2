@@ -10,7 +10,7 @@ import java.io.RandomAccessFile;
 public class TapeBufferedReader {
 	private	RandomAccessFile file;
 	private long runOffset;
-	private long runSize;
+	private long actualRunSize;
 	private FileInputStream fis		= null;
 	private BufferedInputStream bis	= null;
 	private DataInputStream	dis		= null;
@@ -18,41 +18,40 @@ public class TapeBufferedReader {
 	private int[] buffer				= new int[Constants.READ_BUFFER_SIZE];
 	private int currentChunkOffset	= 0;
 	
-	TapeBufferedReader(File f, long offset) throws IOException {
+	TapeBufferedReader(File f, long offset, long runSize) throws IOException {
 		this.file		= new RandomAccessFile(f, "r");
 		this.runOffset	= offset;
-		this.fis		= new FileInputStream(f);
 		
 		//seek to the actual start of run -> check if correct
-		long actualBytesSkipped	= fis.skip(offset * 4);
-		assert(actualBytesSkipped == offset);
-		
+		//file.seek(offset);
+		this.fis		= new FileInputStream(f);
 		this.bis		= new BufferedInputStream(fis);
 		this.dis		= new DataInputStream(bis);
+		dis.skipBytes((int) (offset*4));
+		actualRunSize = Math.min(dis.available()/4, runSize);
+
 	}
 	
-	/**
-	 * Stelle sicher, dass die gewuenschte Position im Buffer ist 
-	 * @throws IOException 
-	 */
-	private void provideChunkAt(int pos) throws IOException{
-		if (!(pos < currentChunkOffset || pos >= currentChunkOffset + buffer.length)){
-			return;
-		}
-		
-		currentChunkOffset = (pos / Constants.READ_BUFFER_SIZE) * Constants.READ_BUFFER_SIZE;
-		
-		for (int i = 0; i < Constants.READ_BUFFER_SIZE; ++i){
-			buffer[i]	= dis.readInt();
-		}
+	public boolean isAvailable() throws IOException{
+		return actualRunSize > 0;
 	}
 	
-	private int getAt(int pos) throws IOException{
-		provideChunkAt(pos);
-		return buffer[pos - currentChunkOffset];
-	}
-	
-	
+//	/**
+//	 * Stelle sicher, dass die gewuenschte Position im Buffer ist 
+//	 * @throws IOException 
+//	 */
+//	private void provideChunkAt(int pos) throws IOException{
+//		if (!(pos < currentChunkOffset || pos >= currentChunkOffset + buffer.length)){
+//			return;
+//		}
+//		
+//		currentChunkOffset = (pos / Constants.READ_BUFFER_SIZE) * Constants.READ_BUFFER_SIZE;
+//		
+//		for (int i = 0; i < Constants.READ_BUFFER_SIZE; ++i){
+//			buffer[i]	= dis.readInt();
+//		}
+//	}
+
 	/**
 	 * Liefert Iterator ueber den Run des Buffers
 	 * @return
@@ -65,14 +64,15 @@ public class TapeBufferedReader {
 
 			@Override
 			public int next() throws IOException {
-				number = buffer[pos++ - currentChunkOffset];
-				assert(pos<=runSize);
+				number = dis.readInt();
+				assert(pos<=actualRunSize);
+				pos++;
 				return number;
 			}
 
 			@Override
 			public boolean hasNext() {
-				return pos < runSize;
+				return pos < actualRunSize;
 			}
 
 			@Override
