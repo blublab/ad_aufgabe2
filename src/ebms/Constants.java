@@ -9,5 +9,5 @@ public class Constants {
 	final static int WRITE_BUFFER_SIZE		= 100;
 	
 	//sorter
-	final static int MEMSORT_BUFFER_SIZE	= 10;
+	final static int MEMSORT_BUFFER_SIZE	= 100000000;
 }

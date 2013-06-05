@@ -76,15 +76,15 @@ public class Sorter {
 		for (DataOutputStream dos: oStreams){
 			dos.close();
 		}
-		System.out.println("Tape0");
-		FolgenErzeuger.ausgabe(group1Tapes.get(0));
-		System.out.println("Tape1");
-		FolgenErzeuger.ausgabe(group1Tapes.get(1));
-		System.out.println("Tape2");
-		FolgenErzeuger.ausgabe(group1Tapes.get(2));
-		System.out.println("Tape3");
-		FolgenErzeuger.ausgabe(group1Tapes.get(3));
-		System.out.println("------------------------");
+//		System.out.println("Tape0");
+//		FolgenErzeuger.ausgabe(group1Tapes.get(0));
+//		System.out.println("Tape1");
+//		FolgenErzeuger.ausgabe(group1Tapes.get(1));
+//		System.out.println("Tape2");
+//		FolgenErzeuger.ausgabe(group1Tapes.get(2));
+//		System.out.println("Tape3");
+//		FolgenErzeuger.ausgabe(group1Tapes.get(3));
+//		System.out.println("------------------------");
 	}
 
 	public File sort() throws IOException {

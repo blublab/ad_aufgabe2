@@ -33,6 +33,7 @@ public class TapeBufferedReader {
 	}
 	
 	public boolean isAvailable() throws IOException{
+		//return file.length() - runOffset > 0;
 		return actualRunSize > 0;
 	}
 	
