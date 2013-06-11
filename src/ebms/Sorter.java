@@ -7,6 +7,7 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
@@ -26,7 +27,10 @@ public class Sorter {
 		RandomAccessFile sequence = new RandomAccessFile(fileWithSequence, "r");
 		this.numberTapes = numberTapes;
 		sequenceLength = sequence.length() / 4;
+		
+		System.out.println("Initialisiere mit " + numberTapes + " Tapes und Teilfolgen der Laenge " + Constants.MEMSORT_BUFFER_SIZE);
 		initialize(fileWithSequence);
+		sequence.close();
 	}
 
 	private void initialize(File fileWithSequence)
@@ -37,13 +41,13 @@ public class Sorter {
 
 		// tapes erstellen
 		for (int i = 0; i < numberTapes; i++) {
-			File file = new File("./Files/tape" + i);
+			File file = new File(Constants.fileRoot + "tape" + i);
 			file.createNewFile();
 			group1Tapes.add(file);
 		}
 
 		for (int i = 0; i < numberTapes; i++) {
-			File file = new File("./Files/tape" + (i + numberTapes));
+			File file = new File(Constants.fileRoot + "tape" + (i + numberTapes));
 			file.createNewFile();
 			group2Tapes.add(file);
 		}
@@ -76,6 +80,8 @@ public class Sorter {
 		for (DataOutputStream dos: oStreams){
 			dos.close();
 		}
+		
+		dis.close();
 //		System.out.println("Tape0");
 //		FolgenErzeuger.ausgabe(group1Tapes.get(0));
 //		System.out.println("Tape1");
@@ -88,26 +94,38 @@ public class Sorter {
 	}
 
 	public File sort() throws IOException {
+		System.out.println("Beginne Mergephase");
+		
 		List<File> sources = group1Tapes;
 		List<File> targets = group2Tapes;
 		long tupel = sources.get(0).length() / runLength /4;
-		if (sources.get(0).length() % runLength != 0)
+		if ((sources.get(0).length()/4) % runLength != 0)
 			tupel++;
 		
 		long tupelGesamt = sequenceLength / numberTapes /runLength;
 		if(tupelGesamt % numberTapes != 0)
 			tupelGesamt++;
-		for(int j = 0; j <= tupelGesamt; j++){
+		//for(int j = 0; j <= tupelGesamt; j++){
+		
+		boolean finished = false;
+			while(!finished){
+			//Zuruecksetzen der Target Tapes
 			for (File f: targets){
-				f.delete();
-				f.createNewFile();
+				boolean success = f.delete();
+				if (success)
+					f.createNewFile();
+				else {
+					FileWriter fw = new FileWriter(f);
+					fw.write("");
+					fw.close();
+				}
 			}
+
 			for (int k = 0; k < tupel; k++) {
 				List<TapeIterator> runIterators = new ArrayList<TapeIterator>();
-
+				
 				// initialisiere BufferedReader mit passendem Offset und
 				// Runlänge
-
 				TapeBufferedWriter bw = new TapeBufferedWriter(targets.get(k
 						% targets.size()), (k / numberTapes)
 						* (numberTapes * runLength), runLength);
@@ -139,11 +157,11 @@ public class Sorter {
 					}
 					// schreibe weg
 					bw.write(minValue);
-					//System.out.println("Schreibe " + minValue);
 
 					if (runIterators.get(indexOfMinValue).hasNext()) {
 						runIterators.get(indexOfMinValue).next();
 					} else {
+						runIterators.get(indexOfMinValue).close();
 						runIterators.remove(indexOfMinValue);
 					}
 				}
@@ -154,26 +172,28 @@ public class Sorter {
 			// neue runLength
 			runLength *= numberTapes;
 
+			
 			// Swap sources/targets
+			System.out.println("Swapping Tapes");
 			List<File> temp = new ArrayList<File>();
 			temp = sources;
 			sources = targets;
 			targets = temp;
 
+			//Abbruchbedingung
+			if (sources.get(1).length() == 0){
+				finished = true;
+			}
+
+			
 			// neue Anzahl Runs
 			tupel = (tupel % numberTapes == 0) ? tupel / numberTapes : (tupel
 					/ numberTapes) + 1;
 			
-			tupelGesamt = (tupelGesamt % numberTapes == 0) ? tupelGesamt / numberTapes : (tupelGesamt
-					/ numberTapes) + 1;
+//			tupelGesamt = (tupelGesamt % numberTapes == 0) ? tupelGesamt / numberTapes : (tupelGesamt
+//					/ numberTapes) + 1;
+			
 		}
-//		System.out.println("Tape0");
-//		FolgenErzeuger.ausgabe(group1Tapes.get(0));
-//		System.out.println("Tape1");
-//		FolgenErzeuger.ausgabe(group1Tapes.get(1));
-//		System.out.println("Tape4");
-//		FolgenErzeuger.ausgabe(group2Tapes.get(0));
-//		System.out.println("-------------------");
 		return sources.get(0);
 	}
 }

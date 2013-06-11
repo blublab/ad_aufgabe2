@@ -9,18 +9,13 @@ import java.io.RandomAccessFile;
 
 public class TapeBufferedReader {
 	private	RandomAccessFile file;
-	private long runOffset;
 	private long actualRunSize;
 	private FileInputStream fis		= null;
 	private BufferedInputStream bis	= null;
 	private DataInputStream	dis		= null;
-	
-	private int[] buffer				= new int[Constants.READ_BUFFER_SIZE];
-	private int currentChunkOffset	= 0;
-	
+		
 	TapeBufferedReader(File f, long offset, long runSize) throws IOException {
 		this.file		= new RandomAccessFile(f, "r");
-		this.runOffset	= offset;
 		
 		//seek to the actual start of run -> check if correct
 		//file.seek(offset);
@@ -35,6 +30,13 @@ public class TapeBufferedReader {
 	public boolean isAvailable() throws IOException{
 		//return file.length() - runOffset > 0;
 		return actualRunSize > 0;
+	}
+	
+	public void finalize() throws IOException{
+		dis.close();
+		bis.close();
+		fis.close();
+		file.close();
 	}
 	
 //	/**
@@ -65,7 +67,13 @@ public class TapeBufferedReader {
 
 			@Override
 			public int next() throws IOException {
-				number = dis.readInt();
+				try {
+					number = dis.readInt();
+				} catch (IOException e) {
+					System.out.println(file.getFD() + "-Reader out of bounds");
+					e.printStackTrace();
+					System.exit(1);
+				}
 				assert(pos<=actualRunSize);
 				pos++;
 				return number;
@@ -79,7 +87,15 @@ public class TapeBufferedReader {
 			@Override
 			public int peek() {
 				return number;
-			}	
+			}
+			
+			@Override
+			public void close() throws IOException {
+				dis.close();
+				bis.close();
+				fis.close();
+				file.close();
+			}
 		};
 	}
 }

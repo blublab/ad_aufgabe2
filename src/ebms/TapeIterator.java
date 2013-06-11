@@ -5,8 +5,7 @@ public interface TapeIterator {
 	
 	/**
 	 * 
-	 * @return
-	 * @throws IOException 
+	 * Incrementiert zum naechsten Integer und gibt diesen zurueck 
 	 */
 	public int next() throws IOException;
 	
@@ -16,9 +15,10 @@ public interface TapeIterator {
 	public boolean hasNext();
 	
 	/**
-	 * 
-	 * @return
+	 * Gibt den aktuellen Wert zurueck ohne zu inkrementieren
 	 */
 	public int peek();
+
+	void close() throws IOException;
 
 }
